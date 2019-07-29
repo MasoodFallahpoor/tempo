@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "ir.fallahpoor.tempo"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+def appDependencies = rootProject.ext.appDependencies
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation appDependencies.kotlin
+    implementation appDependencies.appCompat
+    implementation appDependencies.coreKtx
+    implementation appDependencies.constraintLayout
+    implementation appDependencies.legacySupportV4
+    implementation appDependencies.navigationFragment
+    implementation appDependencies.navigationUi
+    implementation appDependencies.material
+    implementation appDependencies.lifecycle
+    kapt appDependencies.lifecycleCompiler
+    implementation appDependencies.inject
+    implementation appDependencies.dagger
+    kapt appDependencies.daggerCompiler
+    implementation appDependencies.glide
+    kapt appDependencies.glideCompiler
+    implementation appDependencies.materialProgressBar
+    implementation project(':data')
+}

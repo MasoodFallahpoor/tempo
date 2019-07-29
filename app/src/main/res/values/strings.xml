@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tempo</string>
+    <string name="browse_categories">Browse</string>
+    <string name="try_again">Try again</string>
+</resources>
