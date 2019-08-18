@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.browse.di.BrowseCategoriesModule
@@ -71,12 +70,9 @@ class BrowseCategoriesFragment : Fragment() {
         with(categoriesRecyclerView) {
             layoutManager = GridLayoutManager(context, 2)
             adapter = categoriesAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (!recyclerView.canScrollVertically(1) && dy != 0) {
-                        browseCategoriesViewModel.getMoreCategories()
-                    }
+            addOnScrollListener(object : EndlessScrollListener() {
+                override fun onLoadMore() {
+                    browseCategoriesViewModel.getMoreCategories()
                 }
             })
         }
