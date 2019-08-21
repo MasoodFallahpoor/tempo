@@ -7,7 +7,6 @@ import ir.fallahpoor.tempo.data.Resource
 import ir.fallahpoor.tempo.data.entity.CategoriesEntity
 import ir.fallahpoor.tempo.data.entity.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
-import ir.fallahpoor.tempo.data.webservice.WebServiceFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,15 +14,14 @@ import javax.inject.Inject
 
 class CategoriesRepositoryImpl
 @Inject constructor(
-    private val webServiceFactory: WebServiceFactory
+    private val categoryWebService: CategoriesWebService
 ) : CategoriesRepository {
 
     override fun getCategories(limit: Int, offset: Int): LiveData<Resource<CategoriesEntity>> {
 
         val liveData = MutableLiveData<Resource<CategoriesEntity>>()
-        val categoryWebService =
-            webServiceFactory.createApiService(CategoriesWebService::class.java)
-        val categoriesCall: Call<CategoriesEnvelop> = categoryWebService.getCategories(limit, offset)
+        val categoriesCall: Call<CategoriesEnvelop> =
+            categoryWebService.getCategories(limit, offset)
 
         categoriesCall.enqueue(object : Callback<CategoriesEnvelop> {
 
