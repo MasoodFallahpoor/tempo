@@ -44,4 +44,6 @@ dependencies {
     testImplementation dataDependencies.truth
     testImplementation dataDependencies.testCore
     testImplementation dataDependencies.robolecteric
+    testImplementation dataDependencies.mockito
+    testImplementation dataDependencies.archCoreTesting
 }
