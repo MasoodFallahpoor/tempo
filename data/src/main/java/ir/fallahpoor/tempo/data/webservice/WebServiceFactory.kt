@@ -3,6 +3,7 @@ package ir.fallahpoor.tempo.data.webservice
 import android.util.Base64
 import ir.fallahpoor.tempo.data.PreferencesManager
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
+import ir.fallahpoor.tempo.data.webservice.calladapter.LiveDataCallAdapterFactory
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,14 +19,14 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
         const val HEADER_NAME_AUTHORIZATION = "Authorization"
     }
 
-    fun <S> createApiService(serviceClass: Class<S>): S {
-        return Retrofit.Builder()
+    fun <S> createApiService(serviceClass: Class<S>): S =
+        Retrofit.Builder()
             .baseUrl(API_BASE_URL)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .client(getApiOkHttpClient())
             .build()
             .create(serviceClass)
-    }
 
     fun <S> createAuthenticationService(serviceClass: Class<S>): S =
         Retrofit.Builder()
