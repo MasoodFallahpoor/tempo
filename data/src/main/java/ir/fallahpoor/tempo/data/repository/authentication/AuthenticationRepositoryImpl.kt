@@ -7,13 +7,12 @@ import ir.fallahpoor.tempo.data.PreferencesManager
 import ir.fallahpoor.tempo.data.Resource
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
 import ir.fallahpoor.tempo.data.webservice.AccessTokenWebService
-import ir.fallahpoor.tempo.data.webservice.WebServiceFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class AuthenticationRepositoryImpl(
-    private val webServiceFactory: WebServiceFactory,
+    private val accessTokenWebService: AccessTokenWebService,
     private val preferencesManager: PreferencesManager
 ) : AuthenticationRepository {
 
@@ -28,9 +27,6 @@ class AuthenticationRepositoryImpl(
         } else {
             // When access token doesn't exist, make a web service call to obtain a
             // access token
-            val accessTokenWebService = webServiceFactory.createAuthenticationService(
-                AccessTokenWebService::class.java
-            )
             val accessTokenCall = accessTokenWebService.getAccessToken("client_credentials")
 
             accessTokenCall.enqueue(object : Callback<AccessTokenEntity> {
