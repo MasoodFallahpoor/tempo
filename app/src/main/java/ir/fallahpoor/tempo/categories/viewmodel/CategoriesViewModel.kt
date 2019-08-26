@@ -1,10 +1,10 @@
-package ir.fallahpoor.tempo.browse.viewmodel
+package ir.fallahpoor.tempo.categories.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import ir.fallahpoor.tempo.browse.model.CategoriesDataMapper
+import ir.fallahpoor.tempo.categories.model.CategoriesDataMapper
 import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.data.Resource
 import ir.fallahpoor.tempo.data.entity.CategoriesEntity

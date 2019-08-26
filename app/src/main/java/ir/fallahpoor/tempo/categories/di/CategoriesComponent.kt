@@ -1,7 +1,7 @@
-package ir.fallahpoor.tempo.browse.di
+package ir.fallahpoor.tempo.categories.di
 
 import dagger.Component
-import ir.fallahpoor.tempo.browse.view.CategoriesFragment
+import ir.fallahpoor.tempo.categories.view.CategoriesFragment
 import javax.inject.Singleton
 
 @Singleton

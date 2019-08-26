@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.browse.model
+package ir.fallahpoor.tempo.categories.model
 
 data class Category(
     val href: String,

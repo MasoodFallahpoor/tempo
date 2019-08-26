@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.browse.view
+package ir.fallahpoor.tempo.categories.view
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.browse.model.Category
+import ir.fallahpoor.tempo.categories.model.Category
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_category.view.*
 

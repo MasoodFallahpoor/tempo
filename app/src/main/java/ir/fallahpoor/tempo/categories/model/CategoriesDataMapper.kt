@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.browse.model
+package ir.fallahpoor.tempo.categories.model
 
 import ir.fallahpoor.tempo.data.entity.CategoriesEntity
 import ir.fallahpoor.tempo.data.entity.CategoryEntity

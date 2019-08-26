@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.browse.view
+package ir.fallahpoor.tempo.categories.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.browse.di.CategoriesModule
-import ir.fallahpoor.tempo.browse.di.DaggerCategoriesComponent
-import ir.fallahpoor.tempo.browse.model.Category
-import ir.fallahpoor.tempo.browse.viewmodel.CategoriesViewModel
-import ir.fallahpoor.tempo.browse.viewmodel.CategoriesViewModelFactory
+import ir.fallahpoor.tempo.categories.di.CategoriesModule
+import ir.fallahpoor.tempo.categories.di.DaggerCategoriesComponent
+import ir.fallahpoor.tempo.categories.model.Category
+import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
+import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModelFactory
 import ir.fallahpoor.tempo.common.*
 import kotlinx.android.synthetic.main.fragment_browse_categories.*
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class CategoriesFragment : Fragment() {
 
     private fun injectViewModelFactory() {
         DaggerCategoriesComponent.builder()
-            .browseCategoriesModule(CategoriesModule(activity!!))
+            .categoriesModule(CategoriesModule(activity!!))
             .build()
             .inject(this)
     }

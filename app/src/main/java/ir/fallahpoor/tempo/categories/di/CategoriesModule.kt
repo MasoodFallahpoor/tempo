@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.browse.di
+package ir.fallahpoor.tempo.categories.di
 
 import android.content.Context
 import android.content.SharedPreferences
