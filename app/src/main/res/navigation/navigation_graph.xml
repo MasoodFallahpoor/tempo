@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/browseCategoriesFragment">
+    app:startDestination="@id/categoriesFragment">
 
     <fragment
-        android:id="@+id/browseCategoriesFragment"
-        android:name="ir.fallahpoor.tempo.browse.view.BrowseCategoriesFragment"
+        android:id="@+id/categoriesFragment"
+        android:name="ir.fallahpoor.tempo.browse.view.CategoriesFragment"
         android:label="@string/browse_categories"
         tools:layout="@layout/fragment_browse_categories" />
 </navigation>

@@ -6,7 +6,7 @@ import ir.fallahpoor.tempo.browse.model.CategoriesDataMapper
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
 import javax.inject.Inject
 
-class BrowseCategoriesViewModelFactory @Inject
+class CategoriesViewModelFactory @Inject
 constructor(
     private val categoriesRepository: CategoriesRepository,
     private val categoriesDataMapper: CategoriesDataMapper
@@ -14,9 +14,9 @@ constructor(
 
     override fun <T : ViewModel?> create(viewModelClass: Class<T>): T {
 
-        if (viewModelClass.isAssignableFrom(BrowseCategoriesViewModel::class.java)) {
+        if (viewModelClass.isAssignableFrom(CategoriesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return BrowseCategoriesViewModel(categoriesRepository, categoriesDataMapper) as T
+            return CategoriesViewModel(categoriesRepository, categoriesDataMapper) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")
         }

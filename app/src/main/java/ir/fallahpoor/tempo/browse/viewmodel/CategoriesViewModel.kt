@@ -10,7 +10,7 @@ import ir.fallahpoor.tempo.data.Resource
 import ir.fallahpoor.tempo.data.entity.CategoriesEntity
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
 
-class BrowseCategoriesViewModel(
+class CategoriesViewModel(
     private val categoriesRepository: CategoriesRepository,
     private val categoriesDataMapper: CategoriesDataMapper
 ) : ViewModel() {

@@ -12,7 +12,7 @@ import ir.fallahpoor.tempo.data.webservice.WebServiceFactory
 import javax.inject.Singleton
 
 @Module
-class BrowseCategoriesModule(private val context: Context) {
+class CategoriesModule(private val context: Context) {
 
     @Provides
     fun provideContext() = context
