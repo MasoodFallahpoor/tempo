@@ -8,7 +8,9 @@ import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class WebServiceFactory @Inject constructor(private val preferencesManager: PreferencesManager) {
 
     private companion object {
@@ -19,22 +21,23 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
         const val HEADER_NAME_AUTHORIZATION = "Authorization"
     }
 
+    private val retrofitApi = Retrofit.Builder()
+        .baseUrl(API_BASE_URL)
+        .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(getApiOkHttpClient())
+        .build()
+    private val retrofitAuthentication = Retrofit.Builder()
+        .baseUrl(AUTHENTICATION_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(getAuthenticationOkHttpClient())
+        .build()
+
     fun <S> createApiService(serviceClass: Class<S>): S =
-        Retrofit.Builder()
-            .baseUrl(API_BASE_URL)
-            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(getApiOkHttpClient())
-            .build()
-            .create(serviceClass)
+        retrofitApi.create(serviceClass)
 
     fun <S> createAuthenticationService(serviceClass: Class<S>): S =
-        Retrofit.Builder()
-            .baseUrl(AUTHENTICATION_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(getAuthenticationOkHttpClient())
-            .build()
-            .create(serviceClass)
+        retrofitAuthentication.create(serviceClass)
 
     private fun getApiOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()

@@ -10,8 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.categories.di.CategoriesModule
-import ir.fallahpoor.tempo.categories.di.DaggerCategoriesComponent
+import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.model.Category
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModelFactory
@@ -41,10 +40,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun injectViewModelFactory() {
-        DaggerCategoriesComponent.builder()
-            .categoriesModule(CategoriesModule(activity!!))
-            .build()
-            .inject(this)
+        (activity?.application as TempoApplication).appComponent.inject(this)
     }
 
     private fun setupViewModel() {

@@ -8,10 +8,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.MainActivity
 import ir.fallahpoor.tempo.R
+import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.DataErrorViewState
 import ir.fallahpoor.tempo.common.DataLoadedViewState
-import ir.fallahpoor.tempo.splash.di.DaggerSplashComponent
-import ir.fallahpoor.tempo.splash.di.SplashModule
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModelFactory
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -36,10 +35,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun injectViewModelFactory() {
-        DaggerSplashComponent.builder()
-            .splashModule(SplashModule(this))
-            .build()
-            .inject(this)
+        (application as TempoApplication).appComponent.inject(this)
     }
 
     private fun setupViewModel() {

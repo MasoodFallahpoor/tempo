@@ -2,7 +2,9 @@ package ir.fallahpoor.tempo.data
 
 import android.content.SharedPreferences
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PreferencesManager @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     private companion object {
