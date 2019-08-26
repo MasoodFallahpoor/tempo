@@ -46,4 +46,5 @@ dependencies {
     testImplementation dataDependencies.robolecteric
     testImplementation dataDependencies.mockito
     testImplementation dataDependencies.archCoreTesting
+    testImplementation dataDependencies.retrofitMock
 }

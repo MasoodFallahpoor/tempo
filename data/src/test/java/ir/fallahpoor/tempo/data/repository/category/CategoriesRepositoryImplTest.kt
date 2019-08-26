@@ -47,17 +47,17 @@ class CategoriesRepositoryImplTest {
             .thenReturn(expectedLiveData)
 
         // When
-        val actualliveData: LiveData<Resource<CategoriesEntity>> =
+        val actualLiveData: LiveData<Resource<CategoriesEntity>> =
             categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
-        actualliveData.observeForever {
+        actualLiveData.observeForever {
         }
 
         // Then
         Mockito.verify(categoriesWebService).getCategories(LIMIT, OFFSET)
-        Truth.assertThat(actualliveData.value?.status).isEqualTo(Resource.Status.SUCCESS)
-        Truth.assertThat(actualliveData.value?.data)
+        Truth.assertThat(actualLiveData.value?.status).isEqualTo(Resource.Status.SUCCESS)
+        Truth.assertThat(actualLiveData.value?.data)
             .isEqualTo(getTestCategoriesEnvelop().categoriesEntity)
-        Truth.assertThat(actualliveData.value?.error).isEqualTo(null)
+        Truth.assertThat(actualLiveData.value?.error).isEqualTo(null)
 
     }
 
