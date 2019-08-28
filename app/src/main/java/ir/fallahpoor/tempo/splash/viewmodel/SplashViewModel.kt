@@ -3,9 +3,9 @@ package ir.fallahpoor.tempo.splash.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import ir.fallahpoor.tempo.common.DataErrorViewState
-import ir.fallahpoor.tempo.common.DataLoadedViewState
-import ir.fallahpoor.tempo.common.ViewState
+import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
+import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
+import ir.fallahpoor.tempo.common.viewstate.ViewState
 import ir.fallahpoor.tempo.data.Resource
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import ir.fallahpoor.tempo.categories.model.CategoriesDataMapper
-import ir.fallahpoor.tempo.common.*
+import ir.fallahpoor.tempo.common.viewstate.*
 import ir.fallahpoor.tempo.data.Resource
 import ir.fallahpoor.tempo.data.entity.CategoriesEntity
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
@@ -28,7 +28,11 @@ class CategoriesViewModel(
         viewStateLiveData.value =
             if (resource.status == Resource.Status.SUCCESS) {
                 totalCount = (resource.data?.total ?: 0)
-                DataLoadedViewState(categoriesDataMapper.map(resource.data!!))
+                DataLoadedViewState(
+                    categoriesDataMapper.map(
+                        resource.data!!
+                    )
+                )
             } else {
                 DataErrorViewState(resource.error!!.message)
             }
@@ -37,17 +41,23 @@ class CategoriesViewModel(
         viewStateLiveData.value =
             if (resource.status == Resource.Status.SUCCESS) {
                 offset += LIMIT
-                MoreDataLoadedViewState(categoriesDataMapper.map(resource.data!!))
+                MoreDataLoadedViewState(
+                    categoriesDataMapper.map(
+                        resource.data!!
+                    )
+                )
             } else {
                 MoreDataErrorViewState(resource.error!!.message)
             }
     }
 
     fun getCategories() {
-        offset = 0
-        viewStateLiveData.value = LoadingViewState()
-        categoriesLiveData = categoriesRepository.getCategories(LIMIT, offset)
-        categoriesLiveData?.observeForever(categoriesObserver)
+        if (viewStateLiveData.value == null || viewStateLiveData.value is DataErrorViewState) {
+            offset = 0
+            viewStateLiveData.value = LoadingViewState()
+            categoriesLiveData = categoriesRepository.getCategories(LIMIT, offset)
+            categoriesLiveData?.observeForever(categoriesObserver)
+        }
     }
 
     fun getViewStateLiveData() = viewStateLiveData
