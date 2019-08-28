@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
@@ -16,7 +18,7 @@ class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewH
     constructor(
         context: Context,
         categories: List<Category>,
-        clickListener: ((Category) -> Unit)?
+        clickListener: ((Category, ImageView, TextView) -> Unit)?
     ) : this() {
         this.context = context
         this.categories.addAll(categories)
@@ -25,24 +27,31 @@ class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewH
 
     private var context: Context? = null
     private val categories = ArrayList<Category>()
-    private var clickListener: ((Category) -> Unit)? = null
+    private var clickListener: ((Category, ImageView, TextView) -> Unit)? =
+        null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        CategoryViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item_category, parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return CategoryViewHolder(inflater.inflate(R.layout.list_item_category, parent, false))
+    }
 
     override fun getItemCount(): Int = categories.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
         holder.bindData(category)
-        holder.itemView.setOnClickListener { clickListener?.invoke(category) }
+        holder.itemView.setOnClickListener {
+            clickListener?.invoke(
+                category,
+                holder.itemView.categoryImageView,
+                holder.itemView.categoryNameTextView
+            )
+        }
     }
 
-    fun addCategories(news: List<Category>) {
-        categories.addAll(news)
-        notifyItemRangeChanged(itemCount, news.size)
+    fun addCategories(categories: List<Category>) {
+        this.categories.addAll(categories)
+        notifyItemRangeChanged(itemCount, categories.size)
     }
 
     fun getCategories() = categories
@@ -55,6 +64,8 @@ class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewH
 
         fun bindData(category: Category) {
             itemView.categoryNameTextView.text = category.name
+            itemView.categoryNameTextView.transitionName = category.id + "-TV"
+            itemView.categoryImageView.transitionName = category.id + "-IV"
             if (context != null) {
                 Glide.with(context!!)
                     .load(category.icons[0].url)

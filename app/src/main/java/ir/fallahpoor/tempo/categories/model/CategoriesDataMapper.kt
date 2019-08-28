@@ -1,8 +1,8 @@
 package ir.fallahpoor.tempo.categories.model
 
-import ir.fallahpoor.tempo.data.entity.CategoriesEntity
-import ir.fallahpoor.tempo.data.entity.CategoryEntity
 import ir.fallahpoor.tempo.data.entity.IconEntity
+import ir.fallahpoor.tempo.data.entity.category.CategoriesEntity
+import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import javax.inject.Inject
 
 class CategoriesDataMapper @Inject constructor() {

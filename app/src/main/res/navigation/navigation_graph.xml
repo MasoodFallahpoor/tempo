@@ -8,6 +8,29 @@
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="ir.fallahpoor.tempo.categories.view.CategoriesFragment"
-        android:label="@string/browse_categories"
-        tools:layout="@layout/fragment_browse_categories" />
+        android:label="@string/categories"
+        tools:layout="@layout/fragment_categories">
+        <action
+            android:id="@+id/action_to_playlistsFragment"
+            app:destination="@id/playlistsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="ir.fallahpoor.tempo.playlists.view.PlaylistsFragment"
+        android:label="@string/playlists"
+        tools:layout="@layout/fragment_playlists">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
+        <argument
+            android:name="categoryIconUrl"
+            app:argType="string" />
+    </fragment>
 </navigation>

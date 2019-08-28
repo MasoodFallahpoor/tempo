@@ -1,12 +1,12 @@
-package ir.fallahpoor.tempo.data.entity
+package ir.fallahpoor.tempo.data.entity.playlist
 
 import com.google.gson.annotations.SerializedName
 
-data class CategoriesEntity(
+data class PlaylistsEntity(
     @SerializedName("href")
     val href: String,
     @SerializedName("items")
-    val items: List<CategoryEntity>,
+    val items: List<PlaylistEntity>,
     @SerializedName("limit")
     val limit: Int,
     @SerializedName("next")

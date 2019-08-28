@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
@@ -14,8 +16,9 @@ import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.model.Category
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModelFactory
-import ir.fallahpoor.tempo.common.*
-import kotlinx.android.synthetic.main.fragment_browse_categories.*
+import ir.fallahpoor.tempo.common.EndlessScrollListener
+import ir.fallahpoor.tempo.common.viewstate.*
+import kotlinx.android.synthetic.main.fragment_categories.*
 import javax.inject.Inject
 
 class CategoriesFragment : Fragment() {
@@ -28,7 +31,7 @@ class CategoriesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_browse_categories, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_categories, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -92,10 +95,21 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun createCategoriesAdapter(categories: List<Category>) =
-        CategoriesAdapter(context!!, categories, null)
+        CategoriesAdapter(context!!, categories) { category, imageView, textView ->
+            val action = CategoriesFragmentDirections.actionToPlaylistsFragment(
+                category.id,
+                category.name,
+                category.icons[0].url
+            )
+            val extras = FragmentNavigatorExtras(
+                imageView to imageView.transitionName,
+                textView to textView.transitionName
+            )
+            findNavController().navigate(action, extras)
+        }
 
     private fun renderError(message: String) {
-        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
                 categoriesViewModel.getCategories()
             }
@@ -103,7 +117,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun renderMoreDataError(message: String) {
-        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
                 categoriesViewModel.getMoreCategories()
             }
