@@ -35,7 +35,7 @@ class AppModule(private val context: Context) {
         webServiceFactory.createApiService(CategoriesWebService::class.java)
 
     @Provides
-    fun provideAccessTokenWebService(webServiceFactory: WebServiceFactory) =
+    internal fun provideAccessTokenWebService(webServiceFactory: WebServiceFactory) =
         webServiceFactory.createAuthenticationService(AccessTokenWebService::class.java)
 
     @Provides
