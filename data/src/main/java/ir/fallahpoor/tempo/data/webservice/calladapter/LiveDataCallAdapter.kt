@@ -1,8 +1,8 @@
 package ir.fallahpoor.tempo.data.webservice.calladapter
 
 import androidx.lifecycle.LiveData
-import ir.fallahpoor.tempo.data.Error
-import ir.fallahpoor.tempo.data.Resource
+import ir.fallahpoor.tempo.data.common.Error
+import ir.fallahpoor.tempo.data.common.Resource
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Callback

@@ -1,7 +1,7 @@
 package ir.fallahpoor.tempo.categories.model
 
 import com.google.common.truth.Truth
-import ir.fallahpoor.tempo.data.entity.IconEntity
+import ir.fallahpoor.tempo.data.entity.common.IconEntity
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEntity
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import org.junit.Test
@@ -42,7 +42,10 @@ class CategoriesDataMapperTest {
         )
 
     private fun getTestIconEntityList(): List<IconEntity> {
-        return listOf(IconEntity(200, 100, "url 1"), IconEntity(300, 400, "url 2"))
+        return listOf(
+            IconEntity(200, 100, "url 1"),
+            IconEntity(300, 400, "url 2")
+        )
     }
 
     private fun getTestCategories() =

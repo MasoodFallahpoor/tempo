@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.data
+package ir.fallahpoor.tempo.data.common
 
 import android.content.SharedPreferences
 import javax.inject.Inject

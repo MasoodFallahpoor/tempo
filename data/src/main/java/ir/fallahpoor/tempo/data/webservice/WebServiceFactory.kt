@@ -1,7 +1,7 @@
 package ir.fallahpoor.tempo.data.webservice
 
 import android.util.Base64
-import ir.fallahpoor.tempo.data.PreferencesManager
+import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
 import ir.fallahpoor.tempo.data.webservice.calladapter.LiveDataCallAdapterFactory
 import okhttp3.*

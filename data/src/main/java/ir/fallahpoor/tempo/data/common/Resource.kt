@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.data
+package ir.fallahpoor.tempo.data.common
 
 class Resource<T>(
     val status: Status,

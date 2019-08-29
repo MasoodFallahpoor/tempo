@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
 import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
 import ir.fallahpoor.tempo.common.viewstate.ViewState
-import ir.fallahpoor.tempo.data.Resource
+import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
 
 class SplashViewModel(

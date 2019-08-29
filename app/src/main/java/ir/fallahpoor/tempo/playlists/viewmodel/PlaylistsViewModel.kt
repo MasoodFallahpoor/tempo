@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import ir.fallahpoor.tempo.common.viewstate.*
-import ir.fallahpoor.tempo.data.Resource
-import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEntity
+import ir.fallahpoor.tempo.data.common.Resource
+import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
+import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
 import ir.fallahpoor.tempo.playlists.model.PlaylistsDataMapper
 
@@ -22,10 +23,10 @@ class PlaylistsViewModel(
     private var categoryId = ""
     private var totalCount = 0
     private var offset = 0
-    private var playlistsLiveData: LiveData<Resource<PlaylistsEntity>>? = null
-    private var moreCategoriesLiveData: LiveData<Resource<PlaylistsEntity>>? = null
+    private var playlistsLiveData: LiveData<Resource<GeneralEntity<PlaylistEntity>>>? = null
+    private var moreCategoriesLiveData: LiveData<Resource<GeneralEntity<PlaylistEntity>>>? = null
     private val viewStateLiveData = MutableLiveData<ViewState>()
-    private val playlistsObserver = Observer { resource: Resource<PlaylistsEntity> ->
+    private val playlistsObserver = Observer { resource: Resource<GeneralEntity<PlaylistEntity>> ->
         viewStateLiveData.value =
             if (resource.status == Resource.Status.SUCCESS) {
                 totalCount = (resource.data?.total ?: 0)
@@ -38,7 +39,7 @@ class PlaylistsViewModel(
                 DataErrorViewState(resource.error!!.message)
             }
     }
-    private val morePlaylistsObserver = Observer { resource: Resource<PlaylistsEntity> ->
+    private val morePlaylistsObserver = Observer { resource: Resource<GeneralEntity<PlaylistEntity>> ->
         viewStateLiveData.value =
             if (resource.status == Resource.Status.SUCCESS) {
                 offset += LIMIT

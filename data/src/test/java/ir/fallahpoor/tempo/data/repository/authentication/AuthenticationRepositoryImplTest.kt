@@ -3,9 +3,9 @@ package ir.fallahpoor.tempo.data.repository.authentication
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.google.common.truth.Truth
-import ir.fallahpoor.tempo.data.Error
-import ir.fallahpoor.tempo.data.PreferencesManager
-import ir.fallahpoor.tempo.data.Resource
+import ir.fallahpoor.tempo.data.common.Error
+import ir.fallahpoor.tempo.data.common.PreferencesManager
+import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
 import ir.fallahpoor.tempo.data.webservice.AccessTokenWebService
 import org.junit.Before
@@ -110,7 +110,11 @@ class AuthenticationRepositoryImplTest {
         Mockito.verify(preferencesManager, Mockito.never()).setAccessToken(anyString())
         Truth.assertThat(actualLiveData.value?.status).isEqualTo(Resource.Status.ERROR)
         Truth.assertThat(actualLiveData.value?.data).isEqualTo(null)
-        Truth.assertThat(actualLiveData.value?.error).isEqualTo(Error(ERROR_MESSAGE))
+        Truth.assertThat(actualLiveData.value?.error).isEqualTo(
+            Error(
+                ERROR_MESSAGE
+            )
+        )
 
     }
 

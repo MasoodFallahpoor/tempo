@@ -1,7 +1,7 @@
 package ir.fallahpoor.tempo.data.webservice
 
 import androidx.lifecycle.LiveData
-import ir.fallahpoor.tempo.data.Resource
+import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
 import retrofit2.http.GET

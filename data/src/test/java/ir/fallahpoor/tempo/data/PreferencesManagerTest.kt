@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth
+import ir.fallahpoor.tempo.data.common.PreferencesManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

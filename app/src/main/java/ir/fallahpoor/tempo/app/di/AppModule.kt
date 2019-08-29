@@ -4,7 +4,7 @@ import android.content.Context
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
-import ir.fallahpoor.tempo.data.PreferencesManager
+import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepositoryImpl
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository

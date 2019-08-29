@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.data.entity
+package ir.fallahpoor.tempo.data.entity.common
 
 import com.google.gson.annotations.SerializedName
 

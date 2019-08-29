@@ -6,8 +6,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import ir.fallahpoor.tempo.categories.model.CategoriesDataMapper
 import ir.fallahpoor.tempo.common.viewstate.*
-import ir.fallahpoor.tempo.data.Resource
-import ir.fallahpoor.tempo.data.entity.category.CategoriesEntity
+import ir.fallahpoor.tempo.data.common.Resource
+import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
+import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
 
 class CategoriesViewModel(
@@ -21,10 +22,10 @@ class CategoriesViewModel(
 
     private var totalCount = 0
     private var offset = 0
-    private var categoriesLiveData: LiveData<Resource<CategoriesEntity>>? = null
-    private var moreCategoriesLiveData: LiveData<Resource<CategoriesEntity>>? = null
+    private var categoriesLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>>? = null
+    private var moreCategoriesLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>>? = null
     private val viewStateLiveData = MutableLiveData<ViewState>()
-    private val categoriesObserver = Observer { resource: Resource<CategoriesEntity> ->
+    private val categoriesObserver = Observer { resource: Resource<GeneralEntity<CategoryEntity>> ->
         viewStateLiveData.value =
             if (resource.status == Resource.Status.SUCCESS) {
                 totalCount = (resource.data?.total ?: 0)
@@ -37,19 +38,20 @@ class CategoriesViewModel(
                 DataErrorViewState(resource.error!!.message)
             }
     }
-    private val moreCategoriesObserver = Observer { resource: Resource<CategoriesEntity> ->
-        viewStateLiveData.value =
-            if (resource.status == Resource.Status.SUCCESS) {
-                offset += LIMIT
-                MoreDataLoadedViewState(
-                    categoriesDataMapper.map(
-                        resource.data!!
+    private val moreCategoriesObserver =
+        Observer { resource: Resource<GeneralEntity<CategoryEntity>> ->
+            viewStateLiveData.value =
+                if (resource.status == Resource.Status.SUCCESS) {
+                    offset += LIMIT
+                    MoreDataLoadedViewState(
+                        categoriesDataMapper.map(
+                            resource.data!!
+                        )
                     )
-                )
-            } else {
-                MoreDataErrorViewState(resource.error!!.message)
-            }
-    }
+                } else {
+                    MoreDataErrorViewState(resource.error!!.message)
+                }
+        }
 
     fun getCategories() {
         if (viewStateLiveData.value == null || viewStateLiveData.value is DataErrorViewState) {

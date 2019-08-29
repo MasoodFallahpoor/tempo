@@ -4,10 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
-import ir.fallahpoor.tempo.data.Resource
-import ir.fallahpoor.tempo.data.entity.category.CategoriesEntity
+import ir.fallahpoor.tempo.data.common.Error
+import ir.fallahpoor.tempo.data.common.Resource
+import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
-import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEntity
+import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
+import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import org.junit.Before
@@ -45,12 +47,16 @@ class CategoriesRepositoryImplTest {
 
         // Given
         val expectedLiveData = MutableLiveData<Resource<CategoriesEnvelop>>()
-        expectedLiveData.value = Resource(Resource.Status.SUCCESS, getTestCategoriesEnvelop(), null)
+        expectedLiveData.value = Resource(
+            Resource.Status.SUCCESS,
+            getTestCategoriesEnvelop(),
+            null
+        )
         Mockito.`when`(categoriesWebService.getCategories(LIMIT, OFFSET))
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<CategoriesEntity>> =
+        val actualLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>> =
             categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -68,14 +74,18 @@ class CategoriesRepositoryImplTest {
     fun getCategories_sad_case() {
 
         // Given
-        val error = ir.fallahpoor.tempo.data.Error("some message")
+        val error = Error("some message")
         val expectedLiveData = MutableLiveData<Resource<CategoriesEnvelop>>()
-        expectedLiveData.value = Resource(Resource.Status.ERROR, null, error)
+        expectedLiveData.value = Resource(
+            Resource.Status.ERROR,
+            null,
+            error
+        )
         Mockito.`when`(categoriesWebService.getCategories(LIMIT, OFFSET))
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<CategoriesEntity>> =
+        val actualLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>> =
             categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -93,12 +103,16 @@ class CategoriesRepositoryImplTest {
 
         // Given
         val expectedLiveData = MutableLiveData<Resource<PlaylistsEnvelop>>()
-        expectedLiveData.value = Resource(Resource.Status.SUCCESS, getTestPlaylistsEnvelop(), null)
+        expectedLiveData.value = Resource(
+            Resource.Status.SUCCESS,
+            getTestPlaylistsEnvelop(),
+            null
+        )
         Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, LIMIT, OFFSET))
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<PlaylistsEntity>> =
+        val actualLiveData: LiveData<Resource<GeneralEntity<PlaylistEntity>>> =
             categoriesRepositoryImpl.getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -116,14 +130,18 @@ class CategoriesRepositoryImplTest {
     fun getPlaylists_sad_case() {
 
         // Given
-        val error = ir.fallahpoor.tempo.data.Error("some message")
+        val error = Error("some message")
         val expectedLiveData = MutableLiveData<Resource<PlaylistsEnvelop>>()
-        expectedLiveData.value = Resource(Resource.Status.ERROR, null, error)
+        expectedLiveData.value = Resource(
+            Resource.Status.ERROR,
+            null,
+            error
+        )
         Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, LIMIT, OFFSET))
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<PlaylistsEntity>> =
+        val actualLiveData: LiveData<Resource<GeneralEntity<PlaylistEntity>>> =
             categoriesRepositoryImpl.getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -138,7 +156,7 @@ class CategoriesRepositoryImplTest {
 
     private fun getTestCategoriesEnvelop() =
         CategoriesEnvelop(
-            CategoriesEntity(
+            GeneralEntity(
                 "https://api.spotify.com/v1/browse/categories?offset=0&limit=20",
                 ArrayList(),
                 20,
@@ -151,7 +169,7 @@ class CategoriesRepositoryImplTest {
 
     private fun getTestPlaylistsEnvelop() =
         PlaylistsEnvelop(
-            PlaylistsEntity(
+            GeneralEntity(
                 "https://api.spotify.com/v1/browse/categories/rap/playlist?offset=0&limit=20",
                 ArrayList(),
                 20,
