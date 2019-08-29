@@ -124,8 +124,13 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun renderPlaylists(playlists: List<Playlist>) {
-        playlistsAdapter = createPlaylistsAdapter(playlists)
-        playlistsRecyclerView.adapter = playlistsAdapter
+        if (playlists.isEmpty()) {
+            playlistsRecyclerView.visibility = View.GONE
+            noPlaylistTextView.visibility = View.VISIBLE
+        } else {
+            playlistsAdapter = createPlaylistsAdapter(playlists)
+            playlistsRecyclerView.adapter = playlistsAdapter
+        }
     }
 
     private fun createPlaylistsAdapter(playlists: List<Playlist>) =
