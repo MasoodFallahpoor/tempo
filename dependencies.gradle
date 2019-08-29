@@ -9,6 +9,7 @@ ext {
     lifecycleVersion = '2.2.0-alpha02'
     glideVersion = '4.9.0'
     junitVersion = '4.12'
+    truthVersion = '1.0'
     compileSdkVersion = 28
     minSdkVersion = 21
     targetSdkVersion = 28
@@ -30,7 +31,9 @@ ext {
             material           : "com.google.android.material:material:1.0.0-rc01",
             glide              : "com.github.bumptech.glide:glide:$glideVersion",
             glideCompiler      : "com.github.bumptech.glide:compiler:$glideVersion",
-            materialProgressBar: "me.zhanghai.android.materialprogressbar:library:1.6.1"
+            materialProgressBar: "me.zhanghai.android.materialprogressbar:library:1.6.1",
+            junit              : "junit:junit:$junitVersion",
+            truth              : "com.google.truth:truth:$truthVersion"
     ]
 
     dataDependencies = [
@@ -41,7 +44,7 @@ ext {
             livedata             : "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha02",
             inject               : "javax.inject:javax.inject:$injectVersion",
             junit                : "junit:junit:$junitVersion",
-            truth                : "com.google.truth:truth:1.0",
+            truth                : "com.google.truth:truth:$truthVersion",
             testCore             : "androidx.test:core:1.2.0",
             robolecteric         : "org.robolectric:robolectric:4.3",
             mockito              : "org.mockito:mockito-inline:3.0.0",

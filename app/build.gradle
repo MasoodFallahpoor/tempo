@@ -42,5 +42,7 @@ dependencies {
     implementation appDependencies.glide
     kapt appDependencies.glideCompiler
     implementation appDependencies.materialProgressBar
+    testImplementation appDependencies.junit
+    testImplementation appDependencies.truth
     implementation project(':data')
 }
