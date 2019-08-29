@@ -19,13 +19,25 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="enterAlways|scroll">
 
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:indeterminate="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_useIntrinsicPadding="false" />
+
             <ImageView
                 android:id="@+id/categoryIconImageView"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressBar"
                 tools:src="@tools:sample/avatars" />
 
             <TextView
@@ -77,14 +89,5 @@
             android:visibility="gone" />
 
     </FrameLayout>
-
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-        android:id="@+id/progressBar"
-        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:indeterminate="true"
-        app:mpb_progressStyle="horizontal"
-        app:mpb_useIntrinsicPadding="false" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
