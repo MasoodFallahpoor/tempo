@@ -12,6 +12,10 @@ import java.lang.reflect.Type
 class LiveDataCallAdapter<T>(private val responseType: Type) :
     CallAdapter<T, LiveData<Resource<T>>> {
 
+    private companion object {
+        const val UNKNOWN_ERROR_MESSAGE = "Something weird happened"
+    }
+
     override fun adapt(call: Call<T>): LiveData<Resource<T>> {
 
         return object : LiveData<Resource<T>>() {
@@ -44,7 +48,13 @@ class LiveDataCallAdapter<T>(private val responseType: Type) :
                             )
                             true
                         } else {
-                            val error = Error(response.message())
+                            val message =
+                                if (response.message().isNullOrBlank()) {
+                                    UNKNOWN_ERROR_MESSAGE
+                                } else {
+                                    response.message()
+                                }
+                            val error = Error(message)
                             postValue(
                                 Resource(
                                     Resource.Status.ERROR,
@@ -58,7 +68,7 @@ class LiveDataCallAdapter<T>(private val responseType: Type) :
                     }
 
                     override fun onFailure(call: Call<T>, t: Throwable) {
-                        val message = t.message ?: "Unknown error"
+                        val message = t.message ?: UNKNOWN_ERROR_MESSAGE
                         val error = Error(message)
                         postValue(
                             Resource(
