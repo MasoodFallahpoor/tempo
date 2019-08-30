@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import ir.fallahpoor.tempo.data.common.Error
 import ir.fallahpoor.tempo.data.common.Resource
-import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
+import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
@@ -56,7 +56,7 @@ class CategoriesRepositoryImplTest {
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>> =
+        val actualLiveData: LiveData<Resource<ListEntity<CategoryEntity>>> =
             categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -85,7 +85,7 @@ class CategoriesRepositoryImplTest {
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>> =
+        val actualLiveData: LiveData<Resource<ListEntity<CategoryEntity>>> =
             categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -112,7 +112,7 @@ class CategoriesRepositoryImplTest {
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<GeneralEntity<PlaylistEntity>>> =
+        val actualLiveData: LiveData<Resource<ListEntity<PlaylistEntity>>> =
             categoriesRepositoryImpl.getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -141,7 +141,7 @@ class CategoriesRepositoryImplTest {
             .thenReturn(expectedLiveData)
 
         // When
-        val actualLiveData: LiveData<Resource<GeneralEntity<PlaylistEntity>>> =
+        val actualLiveData: LiveData<Resource<ListEntity<PlaylistEntity>>> =
             categoriesRepositoryImpl.getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
         actualLiveData.observeForever {
         }
@@ -156,7 +156,7 @@ class CategoriesRepositoryImplTest {
 
     private fun getTestCategoriesEnvelop() =
         CategoriesEnvelop(
-            GeneralEntity(
+            ListEntity(
                 "https://api.spotify.com/v1/browse/categories?offset=0&limit=20",
                 ArrayList(),
                 20,
@@ -169,7 +169,7 @@ class CategoriesRepositoryImplTest {
 
     private fun getTestPlaylistsEnvelop() =
         PlaylistsEnvelop(
-            GeneralEntity(
+            ListEntity(
                 "https://api.spotify.com/v1/browse/categories/rap/playlist?offset=0&limit=20",
                 ArrayList(),
                 20,

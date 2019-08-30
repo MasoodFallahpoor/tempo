@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import ir.fallahpoor.tempo.categories.model.CategoriesDataMapper
 import ir.fallahpoor.tempo.common.viewstate.*
 import ir.fallahpoor.tempo.data.common.Resource
-import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
+import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
 
@@ -22,10 +22,10 @@ class CategoriesViewModel(
 
     private var totalCount = 0
     private var offset = 0
-    private var categoriesLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>>? = null
-    private var moreCategoriesLiveData: LiveData<Resource<GeneralEntity<CategoryEntity>>>? = null
+    private var categoriesLiveData: LiveData<Resource<ListEntity<CategoryEntity>>>? = null
+    private var moreCategoriesLiveData: LiveData<Resource<ListEntity<CategoryEntity>>>? = null
     private val viewStateLiveData = MutableLiveData<ViewState>()
-    private val categoriesObserver = Observer { resource: Resource<GeneralEntity<CategoryEntity>> ->
+    private val categoriesObserver = Observer { resource: Resource<ListEntity<CategoryEntity>> ->
         viewStateLiveData.value =
             if (resource.status == Resource.Status.SUCCESS) {
                 totalCount = (resource.data?.total ?: 0)
@@ -39,7 +39,7 @@ class CategoriesViewModel(
             }
     }
     private val moreCategoriesObserver =
-        Observer { resource: Resource<GeneralEntity<CategoryEntity>> ->
+        Observer { resource: Resource<ListEntity<CategoryEntity>> ->
             viewStateLiveData.value =
                 if (resource.status == Resource.Status.SUCCESS) {
                     offset += LIMIT

@@ -1,13 +1,13 @@
 package ir.fallahpoor.tempo.playlists.model
 
-import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
+import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.common.IconEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import javax.inject.Inject
 
 class PlaylistsDataMapper @Inject constructor() {
 
-    fun map(playlistsEntity: GeneralEntity<PlaylistEntity>): List<Playlist> =
+    fun map(playlistsEntity: ListEntity<PlaylistEntity>): List<Playlist> =
         playlistsEntity.items.map { mapPlaylist(it) }
 
     private fun mapPlaylist(playlistEntity: PlaylistEntity) =

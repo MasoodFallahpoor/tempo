@@ -3,7 +3,7 @@ package ir.fallahpoor.tempo.data.repository.category
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import ir.fallahpoor.tempo.data.common.Resource
-import ir.fallahpoor.tempo.data.entity.common.GeneralEntity
+import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
@@ -16,11 +16,11 @@ class CategoriesRepositoryImpl
     private val categoryWebService: CategoriesWebService
 ) : CategoriesRepository {
 
-    override fun getCategories(limit: Int, offset: Int): LiveData<Resource<GeneralEntity<CategoryEntity>>> {
+    override fun getCategories(limit: Int, offset: Int): LiveData<Resource<ListEntity<CategoryEntity>>> {
         return Transformations.map(categoryWebService.getCategories(limit, offset), ::t1)
     }
 
-    private fun t1(resource: Resource<CategoriesEnvelop>): Resource<GeneralEntity<CategoryEntity>> =
+    private fun t1(resource: Resource<CategoriesEnvelop>): Resource<ListEntity<CategoryEntity>> =
         if (resource.status == Resource.Status.SUCCESS) {
             Resource(
                 Resource.Status.SUCCESS,
@@ -39,11 +39,11 @@ class CategoriesRepositoryImpl
         categoryId: String,
         limit: Int,
         offset: Int
-    ): LiveData<Resource<GeneralEntity<PlaylistEntity>>> {
+    ): LiveData<Resource<ListEntity<PlaylistEntity>>> {
         return Transformations.map(categoryWebService.getPlaylists(categoryId, limit, offset), ::t2)
     }
 
-    private fun t2(resource: Resource<PlaylistsEnvelop>): Resource<GeneralEntity<PlaylistEntity>> =
+    private fun t2(resource: Resource<PlaylistsEnvelop>): Resource<ListEntity<PlaylistEntity>> =
         if (resource.status == Resource.Status.SUCCESS) {
             Resource(
                 Resource.Status.SUCCESS,

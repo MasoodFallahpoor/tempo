@@ -2,7 +2,7 @@ package ir.fallahpoor.tempo.data.entity.common
 
 import com.google.gson.annotations.SerializedName
 
-data class GeneralEntity<T>(
+data class ListEntity<T>(
     @SerializedName("href")
     val href: String,
     @SerializedName("items")
