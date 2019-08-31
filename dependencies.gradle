@@ -31,9 +31,12 @@ ext {
             material           : "com.google.android.material:material:1.0.0-rc01",
             glide              : "com.github.bumptech.glide:glide:$glideVersion",
             glideCompiler      : "com.github.bumptech.glide:compiler:$glideVersion",
-            materialProgressBar: "me.zhanghai.android.materialprogressbar:library:1.6.1",
-            junit              : "junit:junit:$junitVersion",
-            truth              : "com.google.truth:truth:$truthVersion"
+            materialProgressBar: "me.zhanghai.android.materialprogressbar:library:1.6.1"
+    ]
+
+    appTestDependencies = [
+            junit: "junit:junit:$junitVersion",
+            truth: "com.google.truth:truth:$truthVersion"
     ]
 
     dataDependencies = [
@@ -42,14 +45,17 @@ ext {
             retrofitJsonConverter: "com.squareup.retrofit2:converter-gson:$retrofitVersion",
             gson                 : "com.google.code.gson:gson:$gsonVersion",
             livedata             : "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha02",
-            inject               : "javax.inject:javax.inject:$injectVersion",
-            junit                : "junit:junit:$junitVersion",
-            truth                : "com.google.truth:truth:$truthVersion",
-            testCore             : "androidx.test:core:1.2.0",
-            robolecteric         : "org.robolectric:robolectric:4.3",
-            mockito              : "org.mockito:mockito-inline:3.0.0",
-            archCoreTesting      : "androidx.arch.core:core-testing:2.0.0",
-            retrofitMock         : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
+            inject               : "javax.inject:javax.inject:$injectVersion"
+    ]
+
+    dataTestDependencies = [
+            junit          : "junit:junit:$junitVersion",
+            truth          : "com.google.truth:truth:$truthVersion",
+            testCore       : "androidx.test:core:1.2.0",
+            robolecteric   : "org.robolectric:robolectric:4.3",
+            mockito        : "org.mockito:mockito-inline:3.0.0",
+            archCoreTesting: "androidx.arch.core:core-testing:2.0.0",
+            retrofitMock   : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
     ]
 
 }

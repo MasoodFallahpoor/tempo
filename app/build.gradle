@@ -23,6 +23,7 @@ android {
 }
 
 def appDependencies = rootProject.ext.appDependencies
+def appTestDependencies = rootProject.ext.appTestDependencies
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -42,7 +43,7 @@ dependencies {
     implementation appDependencies.glide
     kapt appDependencies.glideCompiler
     implementation appDependencies.materialProgressBar
-    testImplementation appDependencies.junit
-    testImplementation appDependencies.truth
+    testImplementation appTestDependencies.junit
+    testImplementation appTestDependencies.truth
     implementation project(':data')
 }

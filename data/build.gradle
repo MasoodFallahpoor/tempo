@@ -31,6 +31,7 @@ android {
 }
 
 def dataDependencies = rootProject.ext.dataDependencies
+def dataTestDependencies = rootProject.ext.dataTestDependencies
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -40,11 +41,11 @@ dependencies {
     implementation dataDependencies.gson
     implementation dataDependencies.livedata
     implementation dataDependencies.inject
-    testImplementation dataDependencies.junit
-    testImplementation dataDependencies.truth
-    testImplementation dataDependencies.testCore
-    testImplementation dataDependencies.robolecteric
-    testImplementation dataDependencies.mockito
-    testImplementation dataDependencies.archCoreTesting
-    testImplementation dataDependencies.retrofitMock
+    testImplementation dataTestDependencies.junit
+    testImplementation dataTestDependencies.truth
+    testImplementation dataTestDependencies.testCore
+    testImplementation dataTestDependencies.robolecteric
+    testImplementation dataTestDependencies.mockito
+    testImplementation dataTestDependencies.archCoreTesting
+    testImplementation dataTestDependencies.retrofitMock
 }
