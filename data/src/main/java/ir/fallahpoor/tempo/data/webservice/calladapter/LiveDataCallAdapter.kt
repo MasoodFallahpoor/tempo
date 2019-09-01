@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import java.lang.reflect.Type
 
 class LiveDataCallAdapter<T>(private val responseType: Type) :
@@ -14,6 +15,7 @@ class LiveDataCallAdapter<T>(private val responseType: Type) :
 
     private companion object {
         const val UNKNOWN_ERROR_MESSAGE = "Something weird happened"
+        const val NO_INTERNET_CONNECTION_MESSAGE = "No Internet connection"
     }
 
     override fun adapt(call: Call<T>): LiveData<Resource<T>> {
@@ -68,7 +70,10 @@ class LiveDataCallAdapter<T>(private val responseType: Type) :
                     }
 
                     override fun onFailure(call: Call<T>, t: Throwable) {
-                        val message = t.message ?: UNKNOWN_ERROR_MESSAGE
+                        val message = when (t) {
+                            is IOException -> NO_INTERNET_CONNECTION_MESSAGE
+                            else -> UNKNOWN_ERROR_MESSAGE
+                        }
                         val error = Error(message)
                         postValue(
                             Resource(
