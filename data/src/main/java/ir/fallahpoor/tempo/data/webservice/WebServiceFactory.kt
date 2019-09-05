@@ -3,7 +3,6 @@ package ir.fallahpoor.tempo.data.webservice
 import android.util.Base64
 import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
-import ir.fallahpoor.tempo.data.webservice.calladapter.LiveDataCallAdapterFactory
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,7 +22,6 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
 
     private val retrofitApi = Retrofit.Builder()
         .baseUrl(API_BASE_URL)
-        .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .client(getApiOkHttpClient())
         .build()

@@ -41,6 +41,7 @@ dependencies {
     implementation dataDependencies.gson
     implementation dataDependencies.livedata
     implementation dataDependencies.inject
+    implementation dataDependencies.paging
     testImplementation dataTestDependencies.junit
     testImplementation dataTestDependencies.truth
     testImplementation dataTestDependencies.testCore

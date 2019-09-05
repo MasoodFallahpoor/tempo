@@ -1,61 +1,52 @@
 package ir.fallahpoor.tempo.data.repository.category
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import ir.fallahpoor.tempo.data.common.Resource
-import ir.fallahpoor.tempo.data.entity.common.ListEntity
-import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSourceFactory
+import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
-import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
-import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
+import ir.fallahpoor.tempo.data.repository.ListResult
 import javax.inject.Inject
 
 class CategoriesRepositoryImpl
 @Inject constructor(
-    private val categoryWebService: CategoriesWebService
+    private val categoriesDataSourceFactory: CategoriesDataSourceFactory,
+    private val playlistsDataSourceFactory: PlaylistsDataSourceFactory
 ) : CategoriesRepository {
 
-    override fun getCategories(limit: Int, offset: Int): LiveData<Resource<ListEntity<CategoryEntity>>> {
-        return Transformations.map(categoryWebService.getCategories(limit, offset), ::t1)
+    private val pagedListConfig = PagedList.Config.Builder()
+        .setPrefetchDistance(10)
+        .setPageSize(20)
+        .build()
+
+    override fun getCategories(): ListResult<CategoryEntity> {
+
+        val categoriesLiveData: LiveData<PagedList<CategoryEntity>> =
+            LivePagedListBuilder(categoriesDataSourceFactory, pagedListConfig)
+                .build()
+
+        return ListResult(
+            categoriesLiveData,
+            categoriesDataSourceFactory.stateLiveData
+        )
+
     }
 
-    private fun t1(resource: Resource<CategoriesEnvelop>): Resource<ListEntity<CategoryEntity>> =
-        if (resource.status == Resource.Status.SUCCESS) {
-            Resource(
-                Resource.Status.SUCCESS,
-                resource.data?.categoriesEntity,
-                null
-            )
-        } else {
-            Resource(
-                Resource.Status.ERROR,
-                null,
-                resource.error
-            )
-        }
+    override fun getPlaylists(categoryId: String): ListResult<PlaylistEntity> {
 
-    override fun getPlaylists(
-        categoryId: String,
-        limit: Int,
-        offset: Int
-    ): LiveData<Resource<ListEntity<PlaylistEntity>>> {
-        return Transformations.map(categoryWebService.getPlaylists(categoryId, limit, offset), ::t2)
+        playlistsDataSourceFactory.categoryId = categoryId
+
+        val playlistsLiveData: LiveData<PagedList<PlaylistEntity>> =
+            LivePagedListBuilder(playlistsDataSourceFactory, pagedListConfig)
+                .build()
+
+        return ListResult(
+            playlistsLiveData,
+            playlistsDataSourceFactory.stateLiveData
+        )
+
     }
-
-    private fun t2(resource: Resource<PlaylistsEnvelop>): Resource<ListEntity<PlaylistEntity>> =
-        if (resource.status == Resource.Status.SUCCESS) {
-            Resource(
-                Resource.Status.SUCCESS,
-                resource.data?.playlistsEntity,
-                null
-            )
-        } else {
-            Resource(
-                Resource.Status.ERROR,
-                null,
-                resource.error
-            )
-        }
 
 }

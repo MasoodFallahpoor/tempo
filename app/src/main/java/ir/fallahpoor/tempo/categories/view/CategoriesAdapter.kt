@@ -6,55 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.NonNull
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.categories.model.Category
+import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_category.view.*
 
-class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
-
-    constructor(
-        context: Context,
-        categories: List<Category>,
-        clickListener: ((Category, ImageView, TextView) -> Unit)?
-    ) : this() {
-        this.context = context
-        this.categories.addAll(categories)
-        this.clickListener = clickListener
-    }
-
-    private var context: Context? = null
-    private val categories = ArrayList<Category>()
-    private var clickListener: ((Category, ImageView, TextView) -> Unit)? =
-        null
+class CategoriesAdapter(
+    private val context: Context,
+    private val clickListener: ((CategoryEntity, ImageView, TextView) -> Unit)
+) : PagedListAdapter<CategoryEntity, CategoriesAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return CategoryViewHolder(inflater.inflate(R.layout.list_item_category, parent, false))
     }
 
-    override fun getItemCount(): Int = categories.size
-
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val category: Category = categories[position]
-        holder.bindData(category)
-        holder.itemView.setOnClickListener {
-            clickListener?.invoke(
-                category,
-                holder.itemView.categoryImageView,
-                holder.itemView.categoryNameTextView
-            )
-        }
+        holder.bindData(getItem(position))
     }
-
-    fun addCategories(categories: List<Category>) {
-        this.categories.addAll(categories)
-        notifyItemRangeChanged(itemCount, categories.size)
-    }
-
-    fun getCategories() = categories
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         LayoutContainer {
@@ -62,18 +36,46 @@ class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewH
         override val containerView: View?
             get() = itemView
 
-        fun bindData(category: Category) {
-            itemView.categoryNameTextView.text = category.name
-            itemView.categoryNameTextView.transitionName = category.id + "-TV"
-            itemView.categoryImageView.transitionName = category.id + "-IV"
-            if (context != null) {
-                Glide.with(context!!)
+        fun bindData(category: CategoryEntity?) {
+
+            if (category == null) {
+                itemView.shimmerLayout.visibility = View.VISIBLE
+                itemView.categoryNameTextView.visibility = View.INVISIBLE
+                itemView.categoryImageView.setImageResource(0)
+                itemView.setOnClickListener {}
+            } else {
+                itemView.shimmerLayout.visibility = View.GONE
+                itemView.shimmerLayout.stopShimmer()
+                itemView.categoryNameTextView.visibility = View.VISIBLE
+                itemView.categoryNameTextView.text = category.name
+                itemView.categoryNameTextView.transitionName = category.id + "-TV"
+                itemView.categoryImageView.transitionName = category.id + "-IV"
+                itemView.setOnClickListener {
+                    clickListener.invoke(
+                        category,
+                        itemView.categoryImageView,
+                        itemView.categoryNameTextView
+                    )
+                }
+                Glide.with(context)
                     .load(category.icons[0].url)
                     .placeholder(R.drawable.placeholder_category)
                     .into(itemView.categoryImageView)
             }
+
         }
 
+    }
+
+    companion object {
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<CategoryEntity> =
+            object : DiffUtil.ItemCallback<CategoryEntity>() {
+                override fun areItemsTheSame(@NonNull oldItem: CategoryEntity, @NonNull newItem: CategoryEntity) =
+                    oldItem.id == newItem.id
+
+                override fun areContentsTheSame(@NonNull oldItem: CategoryEntity, @NonNull newItem: CategoryEntity) =
+                    oldItem == newItem
+            }
     }
 
 }

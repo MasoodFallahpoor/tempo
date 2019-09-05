@@ -4,48 +4,30 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.playlists.model.Playlist
+import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_playlist.view.*
 
-class PlaylistsAdapter() : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolder>() {
-
-    constructor(
-        context: Context,
-        playlists: List<Playlist>,
-        clickListener: ((Playlist) -> Unit)?
-    ) : this() {
-        this.context = context
-        this.playlists.addAll(playlists)
-        this.clickListener = clickListener
-    }
-
-    private var context: Context? = null
-    private val playlists = ArrayList<Playlist>()
-    private var clickListener: ((Playlist) -> Unit)? = null
+class PlaylistsAdapter(
+    private val context: Context,
+    private val clickListener: ((PlaylistEntity) -> Unit)?
+) :
+    PagedListAdapter<PlaylistEntity, PlaylistsAdapter.PlaylistViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return PlaylistViewHolder(inflater.inflate(R.layout.list_item_playlist, parent, false))
     }
 
-    override fun getItemCount(): Int = playlists.size
-
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
-        val playlist: Playlist = playlists[position]
-        holder.bindData(playlist)
-        holder.itemView.setOnClickListener { clickListener?.invoke(playlist) }
+        holder.bindData(getItem(position))
     }
-
-    fun addPlaylists(playlists: List<Playlist>) {
-        this.playlists.addAll(playlists)
-        notifyItemRangeChanged(itemCount, playlists.size)
-    }
-
-    fun getPlaylists() = playlists
 
     inner class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         LayoutContainer {
@@ -53,15 +35,33 @@ class PlaylistsAdapter() : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHol
         override val containerView: View?
             get() = itemView
 
-        fun bindData(playlist: Playlist) {
-            if (context != null) {
-                Glide.with(context!!)
+        fun bindData(playlist: PlaylistEntity?) {
+
+            if (playlist == null) {
+                itemView.shimmerLayout.visibility = View.VISIBLE
+                itemView.playlistImageView.setImageResource(0)
+                itemView.setOnClickListener {}
+            } else {
+                itemView.shimmerLayout.visibility = View.GONE
+                itemView.shimmerLayout.stopShimmer()
+                Glide.with(context)
                     .load(playlist.images[0].url)
                     .placeholder(R.drawable.placeholder_category)
                     .into(itemView.playlistImageView)
             }
         }
 
+    }
+
+    companion object {
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<PlaylistEntity> =
+            object : DiffUtil.ItemCallback<PlaylistEntity>() {
+                override fun areItemsTheSame(@NonNull oldItem: PlaylistEntity, @NonNull newItem: PlaylistEntity) =
+                    oldItem.id == newItem.id
+
+                override fun areContentsTheSame(@NonNull oldItem: PlaylistEntity, @NonNull newItem: PlaylistEntity) =
+                    oldItem == newItem
+            }
     }
 
 }

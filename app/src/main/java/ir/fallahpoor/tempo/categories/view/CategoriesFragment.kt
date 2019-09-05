@@ -9,15 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
-import ir.fallahpoor.tempo.categories.model.Category
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModelFactory
-import ir.fallahpoor.tempo.common.EndlessScrollListener
-import ir.fallahpoor.tempo.common.viewstate.*
+import ir.fallahpoor.tempo.data.common.State
+import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import kotlinx.android.synthetic.main.fragment_categories.*
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class CategoriesFragment : Fragment() {
     @Inject
     lateinit var categoriesViewModelFactory: CategoriesViewModelFactory
     private lateinit var categoriesViewModel: CategoriesViewModel
-    private var categoriesAdapter = CategoriesAdapter()
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,66 +36,18 @@ class CategoriesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         injectViewModelFactory()
+        setupAdapter()
         setupRecyclerView()
         setupViewModel()
-        subscribeToViewModel()
-        categoriesViewModel.getCategories()
+        observeViewModel()
     }
 
     private fun injectViewModelFactory() {
         (activity?.application as TempoApplication).appComponent.inject(this)
     }
 
-    private fun setupViewModel() {
-        categoriesViewModel = ViewModelProviders.of(this, categoriesViewModelFactory)
-            .get(CategoriesViewModel::class.java)
-    }
-
-    private fun subscribeToViewModel() {
-        categoriesViewModel.getViewStateLiveData().observe(viewLifecycleOwner,
-            Observer { viewState ->
-                hideLoading()
-                when (viewState) {
-                    is LoadingViewState -> showLoading()
-                    is DataErrorViewState -> renderError(viewState.getMessage())
-                    is MoreDataErrorViewState -> renderMoreDataError(viewState.getMessage())
-                    is MoreDataLoadedViewState<*> -> renderMoreCategories(viewState.data as List<Category>)
-                    is DataLoadedViewState<*> -> renderCategories(viewState.data as List<Category>)
-                }
-            })
-    }
-
-    private fun setupRecyclerView() {
-        with(categoriesRecyclerView) {
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = categoriesAdapter
-            addOnScrollListener(object : EndlessScrollListener() {
-                override fun onLoadMore() {
-                    categoriesViewModel.getMoreCategories()
-                }
-            })
-        }
-    }
-
-    private fun renderMoreCategories(categories: List<Category>) {
-        categoriesAdapter.addCategories(categories.minus(categoriesAdapter.getCategories()))
-    }
-
-    private fun showLoading() {
-        progressBar.visibility = View.VISIBLE
-    }
-
-    private fun hideLoading() {
-        progressBar.visibility = View.GONE
-    }
-
-    private fun renderCategories(categories: List<Category>) {
-        categoriesAdapter = createCategoriesAdapter(categories)
-        categoriesRecyclerView.adapter = categoriesAdapter
-    }
-
-    private fun createCategoriesAdapter(categories: List<Category>) =
-        CategoriesAdapter(context!!, categories) { category, imageView, textView ->
+    private fun setupAdapter() {
+        categoriesAdapter = CategoriesAdapter(context!!) { category, imageView, textView ->
             val action = CategoriesFragmentDirections.actionToPlaylistsFragment(
                 category.id,
                 category.name,
@@ -107,19 +59,60 @@ class CategoriesFragment : Fragment() {
             )
             findNavController().navigate(action, extras)
         }
+    }
+
+    private fun setupRecyclerView() {
+        with(categoriesRecyclerView) {
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = categoriesAdapter
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun setupViewModel() {
+        categoriesViewModel = ViewModelProviders.of(this, categoriesViewModelFactory)
+            .get(CategoriesViewModel::class.java)
+    }
+
+    private fun observeViewModel() {
+
+        categoriesViewModel.categories.observe(
+            viewLifecycleOwner,
+            Observer { categories: PagedList<CategoryEntity> ->
+                categoriesAdapter.submitList(categories)
+            }
+        )
+
+        categoriesViewModel.state.observe(
+            viewLifecycleOwner,
+            Observer { state: State ->
+                when (state.status) {
+                    State.Status.LOADED -> hideLoading()
+                    State.Status.LOADING -> showLoading()
+                    State.Status.LOADING_MORE -> {
+                    }
+                    State.Status.ERROR, State.Status.ERROR_MORE -> {
+                        hideLoading()
+                        renderError(state.message)
+                    }
+                }
+            }
+        )
+
+    }
+
+    private fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        progressBar.visibility = View.GONE
+    }
 
     private fun renderError(message: String) {
         Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
-                categoriesViewModel.getCategories()
-            }
-            .show()
-    }
-
-    private fun renderMoreDataError(message: String) {
-        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_LONG)
-            .setAction(R.string.try_again) {
-                categoriesViewModel.getMoreCategories()
+                // TODO what to do here?
             }
             .show()
     }

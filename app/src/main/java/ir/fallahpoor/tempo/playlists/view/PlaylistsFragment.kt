@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
-import ir.fallahpoor.tempo.common.EndlessScrollListener
 import ir.fallahpoor.tempo.common.extensions.load
-import ir.fallahpoor.tempo.common.viewstate.*
-import ir.fallahpoor.tempo.playlists.model.Playlist
+import ir.fallahpoor.tempo.data.common.State
+import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModelFactory
 import kotlinx.android.synthetic.main.fragment_playlists.*
@@ -30,7 +30,7 @@ class PlaylistsFragment : Fragment() {
     @Inject
     lateinit var playlistsViewModelFactory: PlaylistsViewModelFactory
     private lateinit var playlistsViewModel: PlaylistsViewModel
-    private var playlistsAdapter = PlaylistsAdapter()
+    private lateinit var playlistsAdapter: PlaylistsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -70,25 +70,26 @@ class PlaylistsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         injectViewModelFactory()
+        setupAdapter()
         setupRecyclerView()
         setupViewModel()
-        subscribeToViewModel()
-        playlistsViewModel.getPlaylists(categoryId!!)
+        observeViewModel()
+        playlistsViewModel.getPlaylists(categoryId ?: "")
     }
 
     private fun injectViewModelFactory() {
         (activity?.application as TempoApplication).appComponent.inject(this)
     }
 
+    private fun setupAdapter() {
+        playlistsAdapter = PlaylistsAdapter(context!!, null)
+    }
+
     private fun setupRecyclerView() {
         with(playlistsRecyclerView) {
             layoutManager = GridLayoutManager(context, 2)
             adapter = playlistsAdapter
-            addOnScrollListener(object : EndlessScrollListener() {
-                override fun onLoadMore() {
-                    playlistsViewModel.getMorePlaylists()
-                }
-            })
+            setHasFixedSize(true)
         }
     }
 
@@ -97,22 +98,31 @@ class PlaylistsFragment : Fragment() {
             .get(PlaylistsViewModel::class.java)
     }
 
-    private fun subscribeToViewModel() {
-        playlistsViewModel.getViewStateLiveData().observe(viewLifecycleOwner,
-            Observer { viewState ->
-                hideLoading()
-                when (viewState) {
-                    is LoadingViewState -> showLoading()
-                    is DataErrorViewState -> renderError(viewState.getMessage())
-                    is MoreDataErrorViewState -> renderMoreDataError(viewState.getMessage())
-                    is MoreDataLoadedViewState<*> -> renderMorePlaylists(viewState.data as List<Playlist>)
-                    is DataLoadedViewState<*> -> renderPlaylists(viewState.data as List<Playlist>)
-                }
-            })
-    }
+    private fun observeViewModel() {
 
-    private fun renderMorePlaylists(playlists: List<Playlist>) {
-        playlistsAdapter.addPlaylists(playlists.minus(playlistsAdapter.getPlaylists()))
+        playlistsViewModel.playlists.observe(
+            viewLifecycleOwner,
+            Observer { playlists: PagedList<PlaylistEntity> ->
+                renderPlaylists(playlists)
+            }
+        )
+
+        playlistsViewModel.state.observe(
+            viewLifecycleOwner,
+            Observer { state: State ->
+                when (state.status) {
+                    State.Status.LOADED -> hideLoading()
+                    State.Status.LOADING -> showLoading()
+                    State.Status.LOADING_MORE -> {
+                    }
+                    State.Status.ERROR, State.Status.ERROR_MORE -> {
+                        hideLoading()
+                        renderError(state.message)
+                    }
+                }
+            }
+        )
+
     }
 
     private fun showLoading() {
@@ -123,31 +133,20 @@ class PlaylistsFragment : Fragment() {
         progressBar.visibility = View.GONE
     }
 
-    private fun renderPlaylists(playlists: List<Playlist>) {
+    private fun renderPlaylists(playlists: PagedList<PlaylistEntity>) {
         if (playlists.isEmpty()) {
             playlistsRecyclerView.visibility = View.GONE
             noPlaylistTextView.visibility = View.VISIBLE
         } else {
-            playlistsAdapter = createPlaylistsAdapter(playlists)
-            playlistsRecyclerView.adapter = playlistsAdapter
+            playlistsRecyclerView.visibility = View.VISIBLE
+            playlistsAdapter.submitList(playlists)
         }
     }
-
-    private fun createPlaylistsAdapter(playlists: List<Playlist>) =
-        PlaylistsAdapter(context!!, playlists, null)
 
     private fun renderError(message: String) {
         Snackbar.make(playlistsRecyclerView, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
-                playlistsViewModel.getPlaylists(categoryId!!)
-            }
-            .show()
-    }
-
-    private fun renderMoreDataError(message: String) {
-        Snackbar.make(playlistsRecyclerView, message, Snackbar.LENGTH_LONG)
-            .setAction(R.string.try_again) {
-                playlistsViewModel.getMorePlaylists()
+                playlistsViewModel.getPlaylists(categoryId ?: "")
             }
             .show()
     }
