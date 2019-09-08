@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
-import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModelFactory
+import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import kotlinx.android.synthetic.main.fragment_categories.*
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class CategoriesFragment : Fragment() {
 
     @Inject
-    lateinit var categoriesViewModelFactory: CategoriesViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var categoriesViewModel: CategoriesViewModel
     private lateinit var categoriesAdapter: CategoriesAdapter
 
@@ -70,7 +70,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        categoriesViewModel = ViewModelProviders.of(this, categoriesViewModelFactory)
+        categoriesViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(CategoriesViewModel::class.java)
     }
 

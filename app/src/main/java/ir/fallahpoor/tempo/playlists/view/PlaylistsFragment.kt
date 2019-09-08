@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
+import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
-import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModelFactory
 import kotlinx.android.synthetic.main.fragment_playlists.*
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class PlaylistsFragment : Fragment() {
     private var categoryIconUrl: String? = null
 
     @Inject
-    lateinit var playlistsViewModelFactory: PlaylistsViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var playlistsViewModel: PlaylistsViewModel
     private lateinit var playlistsAdapter: PlaylistsAdapter
 
@@ -94,7 +94,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        playlistsViewModel = ViewModelProviders.of(this, playlistsViewModelFactory)
+        playlistsViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PlaylistsViewModel::class.java)
     }
 

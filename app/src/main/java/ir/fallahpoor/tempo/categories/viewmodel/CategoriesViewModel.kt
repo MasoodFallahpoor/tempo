@@ -7,8 +7,10 @@ import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.repository.ListResult
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
+import javax.inject.Inject
 
-class CategoriesViewModel(categoriesRepository: CategoriesRepository) : ViewModel() {
+class CategoriesViewModel @Inject constructor(categoriesRepository: CategoriesRepository) :
+    ViewModel() {
 
     private val categoriesResult: ListResult<CategoryEntity> = categoriesRepository.getCategories()
 
