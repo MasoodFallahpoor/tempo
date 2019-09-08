@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.app.TempoApplication
+import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
@@ -94,7 +94,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        playlistsViewModel = ViewModelProviders.of(this, viewModelFactory)
+        playlistsViewModel = ViewModelProvider(this, viewModelFactory)
             .get(PlaylistsViewModel::class.java)
     }
 

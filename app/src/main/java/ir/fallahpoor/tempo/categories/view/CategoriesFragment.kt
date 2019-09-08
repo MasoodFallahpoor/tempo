@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
@@ -70,7 +70,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        categoriesViewModel = ViewModelProviders.of(this, viewModelFactory)
+        categoriesViewModel = ViewModelProvider(this, viewModelFactory)
             .get(CategoriesViewModel::class.java)
     }
 
