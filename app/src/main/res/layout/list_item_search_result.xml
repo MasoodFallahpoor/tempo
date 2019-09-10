@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/space_normal">
+
+    <TextView
+        android:id="@+id/searchResultTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/space_normal"
+        android:paddingTop="@dimen/space_normal"
+        android:paddingEnd="@dimen/space_small"
+        android:paddingBottom="@dimen/space_small"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_normal"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Albums" />
+
+    <TextView
+        android:id="@+id/moreSearchResultsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_chevron_right"
+        android:paddingStart="@dimen/space_normal"
+        android:paddingTop="@dimen/space_normal"
+        android:paddingEnd="@dimen/space_small"
+        android:paddingBottom="@dimen/space_small"
+        android:text="@string/more"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_normal"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResultRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchResultTitleTextView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

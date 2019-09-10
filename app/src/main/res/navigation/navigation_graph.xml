@@ -33,4 +33,9 @@
             android:name="categoryIconUrl"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="ir.fallahpoor.tempo.search.view.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search" />
 </navigation>
