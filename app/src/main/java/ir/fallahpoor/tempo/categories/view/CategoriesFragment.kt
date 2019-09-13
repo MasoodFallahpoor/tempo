@@ -15,7 +15,9 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
+import ir.fallahpoor.tempo.common.Device.getScreenWidthInDp
 import ir.fallahpoor.tempo.common.ViewModelFactory
+import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import kotlinx.android.synthetic.main.fragment_categories.*
@@ -63,9 +65,11 @@ class CategoriesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         with(categoriesRecyclerView) {
-            layoutManager = GridLayoutManager(context, 2)
+            val spanCount: Int = getSpanCount()
+            layoutManager = GridLayoutManager(context, spanCount)
             adapter = categoriesAdapter
             setHasFixedSize(true)
+            addItemDecoration(SpaceItemDecoration(context, getSpace(), spanCount))
         }
     }
 
@@ -116,5 +120,12 @@ class CategoriesFragment : Fragment() {
             }
             .show()
     }
+
+    private fun getSpace(): Float {
+        val spanCount: Int = getSpanCount()
+        return ((getScreenWidthInDp(requireContext()) - (spanCount * 200)) / (spanCount + 1))
+    }
+
+    private fun getSpanCount(): Int = getScreenWidthInDp(requireContext()).toInt() / 200
 
 }

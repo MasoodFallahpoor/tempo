@@ -5,4 +5,8 @@
     <dimen name="space_normal">16dp</dimen>
     <dimen name="space_small">8dp</dimen>
     <dimen name="space_very_small">4dp</dimen>
+    <dimen name="width_recycler_view_item">200dp</dimen>
+    <dimen name="height_recycler_view_item">200dp</dimen>
+    <dimen name="width_image_view">200dp</dimen>
+    <dimen name="height_image_view">200dp</dimen>
 </resources>

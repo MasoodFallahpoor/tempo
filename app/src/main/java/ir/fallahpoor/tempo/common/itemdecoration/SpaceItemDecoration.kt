@@ -4,41 +4,68 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 
-class SpaceItemDecoration(context: Context, spaceInDp: Float, orientation: Int) :
-    RecyclerView.ItemDecoration() {
+class SpaceItemDecoration() : RecyclerView.ItemDecoration() {
 
-    companion object {
-        const val HORIZONTAL = LinearLayout.HORIZONTAL
-        const val VERTICAL = LinearLayout.VERTICAL
+    enum class Orientation {
+        HORIZONTAL,
+        VERTICAL
     }
 
-    private var orientation: Int = VERTICAL
-    private var spaceInPx: Int = 0
+    private enum class LayoutManagerType {
+        LINEAR,
+        GRID
+    }
 
-    init {
-        setOrientation(orientation)
-        spaceInPx = TypedValue.applyDimension(
+    private lateinit var layoutManagerType: LayoutManagerType
+    private var orientation: Orientation = Orientation.VERTICAL
+    private var spaceInPx: Int = 0
+    private var spanCount: Int = 2
+
+    constructor(context: Context, spaceInDp: Float, orientation: Orientation) : this() {
+        spaceInPx = getSpaceInPx(context, spaceInDp)
+        this.orientation = orientation
+        layoutManagerType = LayoutManagerType.LINEAR
+    }
+
+    constructor(context: Context, spaceInDp: Float, spanCount: Int) : this() {
+        spaceInPx = getSpaceInPx(context, spaceInDp)
+        this.spanCount = spanCount
+        layoutManagerType = LayoutManagerType.GRID
+    }
+
+    private fun getSpaceInPx(context: Context, spaceInDp: Float): Int =
+        TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             spaceInDp,
             context.resources.displayMetrics
         ).toInt()
-    }
-
-    private fun setOrientation(orientation: Int) {
-        require(orientation == HORIZONTAL || orientation != VERTICAL) { "Invalid orientation. It should be either HORIZONTAL or VERTICAL" }
-        this.orientation = orientation
-    }
 
     override fun getItemOffsets(
-        outRect: Rect, view: View,
-        parent: RecyclerView, state: RecyclerView.State
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+
+        if (layoutManagerType == LayoutManagerType.LINEAR) {
+            setSpacesForLinearLayout(outRect, parent, view)
+        } else {
+            setSpacesForGridLayout(parent, view, outRect)
+        }
+
+    }
+
+    private fun setSpacesForLinearLayout(
+        outRect: Rect,
+        parent: RecyclerView,
+        view: View
     ) {
 
         with(outRect) {
-            if (orientation == VERTICAL) {
+
+            if (orientation == Orientation.VERTICAL) {
                 if (parent.getChildAdapterPosition(view) == 0) {
                     top = spaceInPx
                 }
@@ -52,6 +79,33 @@ class SpaceItemDecoration(context: Context, spaceInDp: Float, orientation: Int) 
 
             right = spaceInPx
             bottom = spaceInPx
+
+        }
+
+    }
+
+    private fun setSpacesForGridLayout(
+        parent: RecyclerView,
+        view: View,
+        outRect: Rect
+    ) {
+
+        val itemPosition = parent.getChildAdapterPosition(view)
+        val itemColumn = itemPosition % spanCount
+
+        with(outRect) {
+
+            if (itemPosition < spanCount) {
+                top = spaceInPx
+            }
+
+            bottom = spaceInPx
+            left = spaceInPx
+
+            if (itemColumn == spanCount - 1) {
+                right = spaceInPx
+            }
+
         }
 
     }

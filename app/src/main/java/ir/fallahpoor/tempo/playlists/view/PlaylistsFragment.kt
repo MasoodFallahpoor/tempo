@@ -13,8 +13,10 @@ import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
+import ir.fallahpoor.tempo.common.Device.getScreenWidthInDp
 import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.common.extensions.load
+import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
@@ -87,9 +89,11 @@ class PlaylistsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         with(playlistsRecyclerView) {
-            layoutManager = GridLayoutManager(context, 2)
+            val spanCount: Int = getSpanCount()
+            layoutManager = GridLayoutManager(context, spanCount)
             adapter = playlistsAdapter
             setHasFixedSize(true)
+            addItemDecoration(SpaceItemDecoration(context, getSpace(), spanCount))
         }
     }
 
@@ -150,6 +154,13 @@ class PlaylistsFragment : Fragment() {
             }
             .show()
     }
+
+    private fun getSpace(): Float {
+        val spanCount: Int = getSpanCount()
+        return ((getScreenWidthInDp(requireContext()) - (spanCount * 200)) / (spanCount + 1))
+    }
+
+    private fun getSpanCount(): Int = getScreenWidthInDp(requireContext()).toInt() / 200
 
 }
 

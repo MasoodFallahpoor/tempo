@@ -166,7 +166,7 @@ class SearchFragment : Fragment() {
                 SpaceItemDecoration(
                     context,
                     8f,
-                    SpaceItemDecoration.HORIZONTAL
+                    SpaceItemDecoration.Orientation.HORIZONTAL
                 )
             )
         }
