@@ -4,17 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.google.common.truth.Truth
+import ir.fallahpoor.tempo.data.TestData
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSource
 import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSourceFactory
 import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSource
 import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
-import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
-import ir.fallahpoor.tempo.data.entity.common.IconEntity
-import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
-import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
 import ir.fallahpoor.tempo.data.repository.ListResult
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import org.junit.Before
@@ -69,7 +66,7 @@ class CategoriesRepositoryImplTest {
 
         // given
         Mockito.`when`(categoriesWebService.getCategories(OFFSET, LIMIT))
-            .thenReturn(Calls.response(Response.success(getTestCategoriesEnvelop())))
+            .thenReturn(Calls.response(Response.success(TestData.getTestCategoriesEnvelop())))
 
         // when
         val actualResult: ListResult<CategoryEntity> = categoriesRepositoryImpl.getCategories()
@@ -112,7 +109,7 @@ class CategoriesRepositoryImplTest {
 
         // given
         Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, OFFSET, LIMIT))
-            .thenReturn(Calls.response(Response.success(getTestPlaylistsEnvelop())))
+            .thenReturn(Calls.response(Response.success(TestData.getTestPlaylistsEnvelop())))
 
         // when
         val actualResult: ListResult<PlaylistEntity> =
@@ -151,47 +148,5 @@ class CategoriesRepositoryImplTest {
         Truth.assertThat(actualStateLiveData.value).isEqualTo(expectedState)
 
     }
-
-    private fun getTestCategoriesEnvelop() =
-        CategoriesEnvelop(
-            ListEntity(
-                "https://api.spotify.com/v1/browse/categories?offset=0&limit=20",
-                getTestCategoryEntityList(),
-                20,
-                "https://api.spotify.com/v1/browse/categories?offset=20&limit=20",
-                0,
-                null,
-                1
-            )
-        )
-
-    private fun getTestCategoryEntityList(): List<CategoryEntity> =
-        listOf(
-            CategoryEntity("some href", getTestIconEntityList(), "some id", "some name")
-        )
-
-    private fun getTestPlaylistsEnvelop() =
-        PlaylistsEnvelop(
-            ListEntity(
-                "https://api.spotify.com/v1/browse/categories/rap/playlist?offset=0&limit=20",
-                getTestPlaylistEntityList(),
-                20,
-                "https://api.spotify.com/v1/browse/categories/rap/playlist?offset=20&limit=20",
-                0,
-                null,
-                1
-            )
-        )
-
-    private fun getTestPlaylistEntityList(): List<PlaylistEntity> =
-        listOf(
-            PlaylistEntity("some id", "some name", getTestIconEntityList())
-        )
-
-    private fun getTestIconEntityList(): List<IconEntity> =
-        listOf(
-            IconEntity(100, 100, "some url"),
-            IconEntity(200, 200, "some other url")
-        )
 
 }
