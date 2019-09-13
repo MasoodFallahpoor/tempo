@@ -4,22 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.MainActivity
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
+import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
 import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
-import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModelFactory
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
     @Inject
-    internal lateinit var splashViewModelFactory: SplashViewModelFactory
+    internal lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var splashViewModel: SplashViewModel
 
@@ -39,7 +39,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        splashViewModel = ViewModelProviders.of(this, splashViewModelFactory)
+        splashViewModel = ViewModelProvider(this, viewModelFactory)
             .get(SplashViewModel::class.java)
     }
 

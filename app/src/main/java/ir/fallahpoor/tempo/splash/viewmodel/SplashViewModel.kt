@@ -8,8 +8,10 @@ import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
 import ir.fallahpoor.tempo.common.viewstate.ViewState
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
+import javax.inject.Inject
 
-class SplashViewModel(
+class SplashViewModel
+@Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
