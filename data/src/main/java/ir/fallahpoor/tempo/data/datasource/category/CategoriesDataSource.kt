@@ -2,12 +2,12 @@ package ir.fallahpoor.tempo.data.datasource.category
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
+import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import retrofit2.Response
-import java.io.IOException
 import javax.inject.Inject
 
 class CategoriesDataSource
@@ -38,7 +38,7 @@ class CategoriesDataSource
             setState(state)
 
         } catch (ex: Exception) {
-            val message = getMessage(ex)
+            val message = ExceptionHumanizer.getHumanizedErrorMessage(ex)
             val state = State(State.Status.ERROR, message)
             setState(state)
         }
@@ -65,7 +65,7 @@ class CategoriesDataSource
             setState(state)
 
         } catch (ex: Exception) {
-            val message = getMessage(ex)
+            val message = ExceptionHumanizer.getHumanizedErrorMessage(ex)
             val state = State(State.Status.ERROR_MORE, message)
             setState(state)
         }
@@ -76,18 +76,6 @@ class CategoriesDataSource
 
     private fun setState(state: State) {
         stateLiveData.postValue(state)
-    }
-
-    private fun getMessage(t: Throwable): String {
-        return when (t) {
-            is IOException -> NO_INTERNET_CONNECTION
-            else -> SOMETHING_WENT_WRONG
-        }
-    }
-
-    companion object {
-        private const val NO_INTERNET_CONNECTION = "No Internet connection"
-        private const val SOMETHING_WENT_WRONG = "Something went wrong"
     }
 
 }
