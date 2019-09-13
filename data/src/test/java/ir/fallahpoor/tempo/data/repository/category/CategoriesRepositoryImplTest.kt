@@ -2,15 +2,20 @@ package ir.fallahpoor.tempo.data.repository.category
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagedList
 import com.google.common.truth.Truth
-import ir.fallahpoor.tempo.data.common.Error
-import ir.fallahpoor.tempo.data.common.Resource
-import ir.fallahpoor.tempo.data.entity.common.ListEntity
+import ir.fallahpoor.tempo.data.common.State
+import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSource
+import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSourceFactory
+import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSource
+import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
 import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
+import ir.fallahpoor.tempo.data.entity.common.IconEntity
+import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
+import ir.fallahpoor.tempo.data.repository.ListResult
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import org.junit.Before
 import org.junit.Rule
@@ -20,137 +25,130 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.Response
+import retrofit2.mock.Calls
 
 @RunWith(MockitoJUnitRunner::class)
 class CategoriesRepositoryImplTest {
 
     private companion object {
-        const val LIMIT = 10
-        const val OFFSET = 20
+        const val OFFSET = 0
+        const val LIMIT = 20
         const val CATEGORY_ID = "123456"
     }
 
     @Rule
     @JvmField
     var rule: TestRule = InstantTaskExecutorRule()
-    private lateinit var categoriesRepositoryImpl: CategoriesRepositoryImpl
     @Mock
     private lateinit var categoriesWebService: CategoriesWebService
+    private lateinit var categoriesDataSourceFactory: CategoriesDataSourceFactory
+    private lateinit var categoriesDataSource: CategoriesDataSource
+    private lateinit var playlistsDataSourceFactory: PlaylistsDataSourceFactory
+    private lateinit var playlistsDataSource: PlaylistsDataSource
+    private lateinit var categoriesRepositoryImpl: CategoriesRepositoryImpl
 
     @Before
     fun runBeforeEachTest() {
-        categoriesRepositoryImpl = CategoriesRepositoryImpl(categoriesWebService)
+
+        categoriesDataSource = CategoriesDataSource(categoriesWebService)
+        categoriesDataSourceFactory = CategoriesDataSourceFactory(categoriesDataSource)
+
+        playlistsDataSource = PlaylistsDataSource(categoriesWebService)
+        playlistsDataSourceFactory = PlaylistsDataSourceFactory(playlistsDataSource)
+
+        categoriesRepositoryImpl = CategoriesRepositoryImpl(
+            categoriesDataSourceFactory,
+            playlistsDataSourceFactory
+        )
+
     }
 
     @Test
     fun getCategories_happy_case() {
 
-        // Given
-        val expectedLiveData = MutableLiveData<Resource<CategoriesEnvelop>>()
-        expectedLiveData.value = Resource(
-            Resource.Status.SUCCESS,
-            getTestCategoriesEnvelop(),
-            null
-        )
-        Mockito.`when`(categoriesWebService.getCategories(LIMIT, OFFSET))
-            .thenReturn(expectedLiveData)
+        // given
+        Mockito.`when`(categoriesWebService.getCategories(OFFSET, LIMIT))
+            .thenReturn(Calls.response(Response.success(getTestCategoriesEnvelop())))
 
-        // When
-        val actualLiveData: LiveData<Resource<ListEntity<CategoryEntity>>> =
-            categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
-        actualLiveData.observeForever {
-        }
+        // when
+        val actualResult: ListResult<CategoryEntity> = categoriesRepositoryImpl.getCategories()
+        val actualDataLiveData: LiveData<PagedList<CategoryEntity>> = actualResult.data
+        val actualStateLiveData: LiveData<State> = actualResult.state
+        actualDataLiveData.observeForever { }
+        actualStateLiveData.observeForever { }
 
-        // Then
-        Mockito.verify(categoriesWebService).getCategories(LIMIT, OFFSET)
-        Truth.assertThat(actualLiveData.value?.status).isEqualTo(Resource.Status.SUCCESS)
-        Truth.assertThat(actualLiveData.value?.data)
-            .isEqualTo(getTestCategoriesEnvelop().categoriesEntity)
-        Truth.assertThat(actualLiveData.value?.error).isEqualTo(null)
+        // then
+        Mockito.verify(categoriesWebService).getCategories(OFFSET, LIMIT)
+        Truth.assertThat(actualDataLiveData.value).isInstanceOf(PagedList::class.java)
+        Truth.assertThat(actualStateLiveData.value).isEqualTo(State.LOADED)
 
     }
 
     @Test
     fun getCategories_sad_case() {
 
-        // Given
-        val error = Error("some message")
-        val expectedLiveData = MutableLiveData<Resource<CategoriesEnvelop>>()
-        expectedLiveData.value = Resource(
-            Resource.Status.ERROR,
-            null,
-            error
-        )
-        Mockito.`when`(categoriesWebService.getCategories(LIMIT, OFFSET))
-            .thenReturn(expectedLiveData)
+        // given
+        Mockito.`when`(categoriesWebService.getCategories(OFFSET, LIMIT))
+            .thenReturn(Calls.failure(Exception()))
 
-        // When
-        val actualLiveData: LiveData<Resource<ListEntity<CategoryEntity>>> =
-            categoriesRepositoryImpl.getCategories(LIMIT, OFFSET)
-        actualLiveData.observeForever {
-        }
+        // when
+        val actualResult: ListResult<CategoryEntity> = categoriesRepositoryImpl.getCategories()
+        val actualDataLiveData: LiveData<PagedList<CategoryEntity>> = actualResult.data
+        val actualStateLiveData: LiveData<State> = actualResult.state
+        actualDataLiveData.observeForever { }
+        actualStateLiveData.observeForever { }
 
-        // Then
-        Mockito.verify(categoriesWebService).getCategories(LIMIT, OFFSET)
-        Truth.assertThat(actualLiveData.value?.status).isEqualTo(Resource.Status.ERROR)
-        Truth.assertThat(actualLiveData.value?.data).isEqualTo(null)
-        Truth.assertThat(actualLiveData.value?.error).isEqualTo(error)
+        // then
+        Mockito.verify(categoriesWebService).getCategories(OFFSET, LIMIT)
+        Truth.assertThat(actualDataLiveData.value).isEmpty()
+        val expectedState = State(State.Status.ERROR, "Something went wrong")
+        Truth.assertThat(actualStateLiveData.value).isEqualTo(expectedState)
 
     }
 
     @Test
     fun getPlaylists_happy_case() {
 
-        // Given
-        val expectedLiveData = MutableLiveData<Resource<PlaylistsEnvelop>>()
-        expectedLiveData.value = Resource(
-            Resource.Status.SUCCESS,
-            getTestPlaylistsEnvelop(),
-            null
-        )
-        Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, LIMIT, OFFSET))
-            .thenReturn(expectedLiveData)
+        // given
+        Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, OFFSET, LIMIT))
+            .thenReturn(Calls.response(Response.success(getTestPlaylistsEnvelop())))
 
-        // When
-        val actualLiveData: LiveData<Resource<ListEntity<PlaylistEntity>>> =
-            categoriesRepositoryImpl.getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
-        actualLiveData.observeForever {
-        }
+        // when
+        val actualResult: ListResult<PlaylistEntity> =
+            categoriesRepositoryImpl.getPlaylists(CATEGORY_ID)
+        val actualDataLiveData: LiveData<PagedList<PlaylistEntity>> = actualResult.data
+        val actualStateLiveData: LiveData<State> = actualResult.state
+        actualDataLiveData.observeForever { }
+        actualStateLiveData.observeForever { }
 
-        // Then
-        Mockito.verify(categoriesWebService).getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
-        Truth.assertThat(actualLiveData.value?.status).isEqualTo(Resource.Status.SUCCESS)
-        Truth.assertThat(actualLiveData.value?.data)
-            .isEqualTo(getTestPlaylistsEnvelop().playlistsEntity)
-        Truth.assertThat(actualLiveData.value?.error).isEqualTo(null)
+        // then
+        Mockito.verify(categoriesWebService).getPlaylists(CATEGORY_ID, OFFSET, LIMIT)
+        Truth.assertThat(actualDataLiveData.value).isInstanceOf(PagedList::class.java)
+        Truth.assertThat(actualStateLiveData.value).isEqualTo(State.LOADED)
 
     }
 
     @Test
     fun getPlaylists_sad_case() {
 
-        // Given
-        val error = Error("some message")
-        val expectedLiveData = MutableLiveData<Resource<PlaylistsEnvelop>>()
-        expectedLiveData.value = Resource(
-            Resource.Status.ERROR,
-            null,
-            error
-        )
-        Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, LIMIT, OFFSET))
-            .thenReturn(expectedLiveData)
+        // given
+        Mockito.`when`(categoriesWebService.getPlaylists(CATEGORY_ID, OFFSET, LIMIT))
+            .thenReturn(Calls.failure(Exception()))
 
-        // When
-        val actualLiveData: LiveData<Resource<ListEntity<PlaylistEntity>>> =
-            categoriesRepositoryImpl.getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
-        actualLiveData.observeForever {
-        }
+        // when
+        val actualResult: ListResult<PlaylistEntity> =
+            categoriesRepositoryImpl.getPlaylists(CATEGORY_ID)
+        val actualDataLiveData: LiveData<PagedList<PlaylistEntity>> = actualResult.data
+        val actualStateLiveData: LiveData<State> = actualResult.state
+        actualDataLiveData.observeForever { }
+        actualStateLiveData.observeForever { }
 
-        // Then
-        Mockito.verify(categoriesWebService).getPlaylists(CATEGORY_ID, LIMIT, OFFSET)
-        Truth.assertThat(actualLiveData.value?.status).isEqualTo(Resource.Status.ERROR)
-        Truth.assertThat(actualLiveData.value?.data).isEqualTo(null)
-        Truth.assertThat(actualLiveData.value?.error).isEqualTo(error)
+        // then
+        Mockito.verify(categoriesWebService).getPlaylists(CATEGORY_ID, OFFSET, LIMIT)
+        Truth.assertThat(actualDataLiveData.value).isEmpty()
+        val expectedState = State(State.Status.ERROR, "Something went wrong")
+        Truth.assertThat(actualStateLiveData.value).isEqualTo(expectedState)
 
     }
 
@@ -158,26 +156,42 @@ class CategoriesRepositoryImplTest {
         CategoriesEnvelop(
             ListEntity(
                 "https://api.spotify.com/v1/browse/categories?offset=0&limit=20",
-                ArrayList(),
+                getTestCategoryEntityList(),
                 20,
                 "https://api.spotify.com/v1/browse/categories?offset=20&limit=20",
                 0,
                 null,
-                35
+                1
             )
+        )
+
+    private fun getTestCategoryEntityList(): List<CategoryEntity> =
+        listOf(
+            CategoryEntity("some href", getTestIconEntityList(), "some id", "some name")
         )
 
     private fun getTestPlaylistsEnvelop() =
         PlaylistsEnvelop(
             ListEntity(
                 "https://api.spotify.com/v1/browse/categories/rap/playlist?offset=0&limit=20",
-                ArrayList(),
+                getTestPlaylistEntityList(),
                 20,
                 "https://api.spotify.com/v1/browse/categories/rap/playlist?offset=20&limit=20",
                 0,
                 null,
-                35
+                1
             )
+        )
+
+    private fun getTestPlaylistEntityList(): List<PlaylistEntity> =
+        listOf(
+            PlaylistEntity("some id", "some name", getTestIconEntityList())
+        )
+
+    private fun getTestIconEntityList(): List<IconEntity> =
+        listOf(
+            IconEntity(100, 100, "some url"),
+            IconEntity(200, 200, "some other url")
         )
 
 }
