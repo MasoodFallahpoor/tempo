@@ -1,10 +1,9 @@
-package ir.fallahpoor.tempo.data
+package ir.fallahpoor.tempo.data.common
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth
-import ir.fallahpoor.tempo.data.common.PreferencesManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,7 +33,10 @@ class PreferencesManagerTest {
 
         // Given
         sharedPreferences.edit()
-            .putString(KEY_ACCESS_TOKEN, ACCESS_TOKEN)
+            .putString(
+                KEY_ACCESS_TOKEN,
+                ACCESS_TOKEN
+            )
             .commit()
 
         // When
