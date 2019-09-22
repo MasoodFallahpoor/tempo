@@ -11,4 +11,11 @@
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
     <string name="tracks">Tracks</string>
+    <string name="artist">Artist</string>
+    <string name="genres">Genres</string>
+    <string name="followers">Followers</string>
+    <string name="not_available">N/A</string>
+    <string name="related_artists">Related Artists</string>
+    <string name="top_tracks">Top Tracks</string>
+    <string name="no_related_artists">No related artists</string>
 </resources>

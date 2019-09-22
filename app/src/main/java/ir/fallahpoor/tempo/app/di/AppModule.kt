@@ -7,16 +7,15 @@ import dagger.Provides
 import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSourceFactory
 import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
+import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepository
+import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepositoryImpl
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepositoryImpl
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepositoryImpl
 import ir.fallahpoor.tempo.data.repository.search.SearchRepository
 import ir.fallahpoor.tempo.data.repository.search.SearchRepositoryImpl
-import ir.fallahpoor.tempo.data.webservice.AccessTokenWebService
-import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
-import ir.fallahpoor.tempo.data.webservice.SearchWebService
-import ir.fallahpoor.tempo.data.webservice.WebServiceFactory
+import ir.fallahpoor.tempo.data.webservice.*
 
 @Module
 class AppModule(private val context: Context) {
@@ -43,6 +42,10 @@ class AppModule(private val context: Context) {
         SearchRepositoryImpl(searchWebService)
 
     @Provides
+    internal fun provideArtistsRepository(artistsWebService: ArtistsWebService): ArtistsRepository =
+        ArtistsRepositoryImpl(artistsWebService)
+
+    @Provides
     internal fun provideCategoriesWebService(webServiceFactory: WebServiceFactory) =
         webServiceFactory.createApiService(CategoriesWebService::class.java)
 
@@ -53,6 +56,10 @@ class AppModule(private val context: Context) {
     @Provides
     internal fun provideSearchWebService(webServiceFactory: WebServiceFactory) =
         webServiceFactory.createApiService(SearchWebService::class.java)
+
+    @Provides
+    internal fun provideArtistsWebService(webServiceFactory: WebServiceFactory) =
+        webServiceFactory.createApiService(ArtistsWebService::class.java)
 
     @Provides
     internal fun provideSharedPreferences(context: Context) =

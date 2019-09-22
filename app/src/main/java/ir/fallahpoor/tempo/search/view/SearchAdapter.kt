@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
@@ -21,7 +23,8 @@ import kotlinx.android.synthetic.main.list_item_search_result_track.view.*
 class SearchAdapter<T>(
     private val context: Context,
     private val data: ListEntity<T>,
-    private val type: Type
+    private val type: Type,
+    private val clickListener: ((T, ImageView, TextView) -> Unit)?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     enum class Type {
@@ -82,7 +85,16 @@ class SearchAdapter<T>(
 
         when (holder) {
             is SearchAdapter<*>.AlbumViewHolder -> holder.bindData(data.items[position])
-            is SearchAdapter<*>.ArtistViewHolder -> holder.bindData(data.items[position])
+            is SearchAdapter<*>.ArtistViewHolder -> {
+                holder.bindData(data.items[position])
+                holder.itemView.setOnClickListener {
+                    clickListener?.invoke(
+                        data.items[position],
+                        holder.itemView.artistImageView,
+                        holder.itemView.artistNameTextView
+                    )
+                }
+            }
             is SearchAdapter<*>.TrackViewHolder -> holder.bindData(data.items[position])
             is SearchAdapter<*>.PlaylistViewHolder -> holder.bindData(data.items[position])
         }
@@ -124,6 +136,9 @@ class SearchAdapter<T>(
             val artist = t as ArtistEntity
 
             itemView.artistNameTextView.text = artist.name
+            itemView.artistNameTextView.transitionName = artist.id + "-TV"
+
+            itemView.artistImageView.transitionName = artist.id + "-IV"
 
             if (artist.images.isNotEmpty()) {
                 Glide.with(context)

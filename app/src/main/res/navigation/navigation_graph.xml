@@ -37,5 +37,25 @@
         android:id="@+id/searchFragment"
         android:name="ir.fallahpoor.tempo.search.view.SearchFragment"
         android:label="@string/search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_to_artistFragment"
+            app:destination="@id/artistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="ir.fallahpoor.tempo.artist.view.ArtistFragment"
+        android:label="@string/artist"
+        tools:layout="@layout/fragment_artist">
+        <argument
+            android:name="artistId"
+            app:argType="string" />
+        <argument
+            android:name="artistName"
+            app:argType="string" />
+        <argument android:name="artistImageUrl" />
+        <action
+            android:id="@+id/action_artistFragment_self"
+            app:destination="@id/artistFragment" />
+    </fragment>
 </navigation>

@@ -34,7 +34,8 @@ ext {
             glideCompiler      : "com.github.bumptech.glide:compiler:$glideVersion",
             materialProgressBar: "me.zhanghai.android.materialprogressbar:library:1.6.1",
             paging             : "androidx.paging:paging-runtime-ktx:$pagingVersion",
-            shimmer            : 'com.facebook.shimmer:shimmer:0.5.0'
+            shimmer            : 'com.facebook.shimmer:shimmer:0.5.0',
+            klaster            : 'com.github.rongi:klaster:0.3.5'
     ]
 
     appTestDependencies = [
@@ -49,7 +50,8 @@ ext {
             gson                 : "com.google.code.gson:gson:$gsonVersion",
             livedata             : "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha04",
             inject               : "javax.inject:javax.inject:$injectVersion",
-            paging               : "androidx.paging:paging-runtime-ktx:$pagingVersion"
+            paging               : "androidx.paging:paging-runtime-ktx:$pagingVersion",
+            coroutines           : "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
     ]
 
     dataTestDependencies = [

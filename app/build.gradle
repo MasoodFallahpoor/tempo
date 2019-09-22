@@ -45,6 +45,7 @@ dependencies {
     implementation appDependencies.materialProgressBar
     implementation appDependencies.paging
     implementation appDependencies.shimmer
+    implementation appDependencies.klaster
     testImplementation appTestDependencies.junit
     testImplementation appTestDependencies.truth
     implementation project(':data')

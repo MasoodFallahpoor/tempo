@@ -12,6 +12,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -22,6 +24,7 @@ import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
 import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
 import ir.fallahpoor.tempo.data.entity.SearchEntity
+import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.search.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -113,7 +116,10 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun <T> addRecyclerView(data: ListEntity<T>, type: SearchAdapter.Type, @StringRes title: Int) {
+    private fun <T> addRecyclerView(
+        data: ListEntity<T>,
+        type: SearchAdapter.Type, @StringRes title: Int
+    ) {
 
         if (data.items.isNullOrEmpty()) {
             return
@@ -161,7 +167,19 @@ class SearchFragment : Fragment() {
                 false
             )
             setHasFixedSize(true)
-            adapter = SearchAdapter(context, data, type)
+            adapter = SearchAdapter(context, data, type) { t, imageView, textView ->
+                val artistEntity = t as ArtistEntity
+                val action = SearchFragmentDirections.actionToArtistFragment(
+                    artistEntity.id,
+                    artistEntity.name,
+                    artistEntity.images[0].url
+                )
+                val extras = FragmentNavigatorExtras(
+                    imageView to imageView.transitionName,
+                    textView to textView.transitionName
+                )
+                findNavController().navigate(action, extras)
+            }
             addItemDecoration(
                 SpaceItemDecoration(
                     context,
