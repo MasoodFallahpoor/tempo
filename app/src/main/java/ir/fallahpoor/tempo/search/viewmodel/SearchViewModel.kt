@@ -39,4 +39,9 @@ class SearchViewModel
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        searchRepository.dispose()
+    }
+
 }

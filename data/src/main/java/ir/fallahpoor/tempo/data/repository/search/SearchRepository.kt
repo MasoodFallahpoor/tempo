@@ -6,4 +6,5 @@ import ir.fallahpoor.tempo.data.entity.SearchEntity
 
 interface SearchRepository {
     fun search(query: String): LiveData<Resource<SearchEntity>>
+    fun dispose()
 }
