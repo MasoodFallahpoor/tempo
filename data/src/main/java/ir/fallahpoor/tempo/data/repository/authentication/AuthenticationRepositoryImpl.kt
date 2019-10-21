@@ -2,7 +2,7 @@ package ir.fallahpoor.tempo.data.repository.authentication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ir.fallahpoor.tempo.data.common.Error
+import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
@@ -23,11 +23,7 @@ class AuthenticationRepositoryImpl(
         if (accessTokenExists()) {
             // When access token exists, there is no need to do anything. Just return
             // a successful result
-            liveData.value = Resource(
-                Resource.Status.SUCCESS,
-                null,
-                null
-            )
+            liveData.value = Resource.Success(null)
         } else {
             // When access token doesn't exist, make a web service call to obtain a
             // access token
@@ -36,12 +32,7 @@ class AuthenticationRepositoryImpl(
             accessTokenCall.enqueue(object : Callback<AccessTokenEntity> {
 
                 override fun onFailure(call: Call<AccessTokenEntity>, t: Throwable) {
-                    val error = Error(t.message!!)
-                    liveData.value = Resource(
-                        Resource.Status.ERROR,
-                        null,
-                        error
-                    )
+                    liveData.value = Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                 }
 
                 override fun onResponse(
@@ -51,18 +42,9 @@ class AuthenticationRepositoryImpl(
                     if (response.isSuccessful) {
                         val accessToken: String? = response.body()?.accessToken
                         preferencesManager.setAccessToken(accessToken)
-                        liveData.value = Resource(
-                            Resource.Status.SUCCESS,
-                            null,
-                            null
-                        )
+                        liveData.value = Resource.Success(null)
                     } else {
-                        val error = Error(response.message())
-                        liveData.value = Resource(
-                            Resource.Status.ERROR,
-                            null,
-                            error
-                        )
+                        liveData.value = Resource.Error(response.message())
                     }
                 }
 

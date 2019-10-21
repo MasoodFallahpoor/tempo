@@ -2,7 +2,6 @@ package ir.fallahpoor.tempo.data.repository.artists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ir.fallahpoor.tempo.data.common.Error
 import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
@@ -228,12 +227,11 @@ class ArtistsRepositoryImpl
     }
 
     private fun <T> getErrorResource(errorMessage: String): Resource<T> {
-        val error = Error(errorMessage)
-        return Resource(Resource.Status.ERROR, null, error)
+        return Resource.Error(errorMessage)
     }
 
-    private fun <T> getSuccessResource(t: T): Resource<T> {
-        return Resource(Resource.Status.SUCCESS, t, null)
+    private fun <T> getSuccessResource(data: T): Resource<T> {
+        return Resource.Success(data)
     }
 
 }

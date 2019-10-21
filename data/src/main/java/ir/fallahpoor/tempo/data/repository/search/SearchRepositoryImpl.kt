@@ -2,7 +2,6 @@ package ir.fallahpoor.tempo.data.repository.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ir.fallahpoor.tempo.data.common.Error
 import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.SearchEntity
@@ -29,25 +28,15 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
             override fun onResponse(call: Call<SearchEntity>, response: Response<SearchEntity>) {
 
                 if (response.isSuccessful) {
-                    liveData.value = Resource(Resource.Status.SUCCESS, response.body(), null)
+                    liveData.value = Resource.Success(response.body())
                 } else {
-                    val error = Error(response.message())
-                    liveData.value = Resource(
-                        Resource.Status.ERROR,
-                        null,
-                        error
-                    )
+                    liveData.value = Resource.Error(response.message())
                 }
 
             }
 
             override fun onFailure(call: Call<SearchEntity>, t: Throwable) {
-                val error = Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
-                liveData.value = Resource(
-                    Resource.Status.ERROR,
-                    null,
-                    error
-                )
+                liveData.value = Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
             }
 
         })

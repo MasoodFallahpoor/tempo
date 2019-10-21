@@ -20,7 +20,7 @@ class SplashViewModel
             if (resource.status == Resource.Status.SUCCESS) {
                 DataLoadedViewState(Unit)
             } else {
-                DataErrorViewState(resource.error!!.message)
+                DataErrorViewState(resource.errorMessage!!)
             }
         }
     }

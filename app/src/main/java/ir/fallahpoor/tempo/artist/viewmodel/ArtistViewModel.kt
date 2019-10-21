@@ -37,7 +37,7 @@ class ArtistViewModel
         if (resource.status == Resource.Status.SUCCESS) {
             DataLoadedViewState(resource.data)
         } else {
-            DataErrorViewState(resource.error!!.message)
+            DataErrorViewState(resource.errorMessage!!)
         }
 
     override fun onCleared() {
