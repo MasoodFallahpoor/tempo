@@ -7,8 +7,9 @@ import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
 import ir.fallahpoor.tempo.data.webservice.AccessTokenWebService
-import retrofit2.Call
-import retrofit2.Callback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class AuthenticationRepositoryImpl(
@@ -27,28 +28,27 @@ class AuthenticationRepositoryImpl(
         } else {
             // When access token doesn't exist, make a web service call to obtain a
             // access token
-            val accessTokenCall = accessTokenWebService.getAccessToken("client_credentials")
+            CoroutineScope(Dispatchers.IO).launch {
 
-            accessTokenCall.enqueue(object : Callback<AccessTokenEntity> {
-
-                override fun onFailure(call: Call<AccessTokenEntity>, t: Throwable) {
-                    liveData.value = Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
-                }
-
-                override fun onResponse(
-                    call: Call<AccessTokenEntity>,
-                    response: Response<AccessTokenEntity>
-                ) {
-                    if (response.isSuccessful) {
-                        val accessToken: String? = response.body()?.accessToken
-                        preferencesManager.setAccessToken(accessToken)
-                        liveData.value = Resource.Success(null)
-                    } else {
-                        liveData.value = Resource.Error(response.message())
+                val resource: Resource<Unit> =
+                    try {
+                        val response: Response<AccessTokenEntity> =
+                            accessTokenWebService.getAccessToken("client_credentials")
+                        if (response.isSuccessful) {
+                            val accessToken: String? = response.body()?.accessToken
+                            preferencesManager.setAccessToken(accessToken)
+                            Resource.Success(null)
+                        } else {
+                            Resource.Error(response.message())
+                        }
+                    } catch (t: Throwable) {
+                        Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                     }
-                }
 
-            })
+                liveData.postValue(resource)
+
+            }
+
         }
 
         return liveData

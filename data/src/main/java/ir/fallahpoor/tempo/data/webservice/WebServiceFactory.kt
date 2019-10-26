@@ -3,6 +3,9 @@ package ir.fallahpoor.tempo.data.webservice
 import android.util.Base64
 import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,23 +28,29 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
         .addConverterFactory(GsonConverterFactory.create())
         .client(getApiOkHttpClient())
         .build()
-    private val retrofitAuthentication = Retrofit.Builder()
-        .baseUrl(AUTHENTICATION_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(getAuthenticationOkHttpClient())
-        .build()
-
-    fun <S> createApiService(serviceClass: Class<S>): S =
-        retrofitApi.create(serviceClass)
-
-    fun <S> createAuthenticationService(serviceClass: Class<S>): S =
-        retrofitAuthentication.create(serviceClass)
 
     private fun getApiOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(AddHeadersInterceptor())
             .authenticator(Authenticator())
             .build()
+
+    private val retrofitAuthentication = Retrofit.Builder()
+        .baseUrl(AUTHENTICATION_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(getAuthenticationOkHttpClient())
+        .build()
+
+    private fun getAuthenticationOkHttpClient(): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(AddAuthenticationHeaderInterceptor())
+            .build()
+
+    fun <S> createApiService(serviceClass: Class<S>): S =
+        retrofitApi.create(serviceClass)
+
+    fun <S> createAuthenticationService(serviceClass: Class<S>): S =
+        retrofitAuthentication.create(serviceClass)
 
     private inner class AddHeadersInterceptor : Interceptor {
 
@@ -67,18 +76,16 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
 
         override fun authenticate(route: Route?, response: Response): Request? {
 
-            val accessTokenWebService = createAuthenticationService(
-                AccessTokenWebService::class.java
-            )
-            val accessTokenResponse: retrofit2.Response<AccessTokenEntity> =
-                accessTokenWebService.getAccessToken("client_credentials").execute()
-            val newAccessToken: String? =
-                if (accessTokenResponse.isSuccessful) {
-                    accessTokenResponse.body()?.accessToken
-                } else {
-                    null
-                }
-            preferencesManager.setAccessToken(newAccessToken)
+            runBlocking {
+                val accessTokenResponse: retrofit2.Response<AccessTokenEntity> = getAccessToken()
+                val newAccessToken: String? =
+                    if (response.isSuccessful) {
+                        accessTokenResponse.body()?.accessToken
+                    } else {
+                        null
+                    }
+                preferencesManager.setAccessToken(newAccessToken)
+            }
 
             return response.request().newBuilder()
                 .header(
@@ -89,12 +96,15 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
 
         }
 
-    }
+        private suspend fun getAccessToken(): retrofit2.Response<AccessTokenEntity> {
+            val accessTokenWebService =
+                createAuthenticationService(AccessTokenWebService::class.java)
+            return withContext(Dispatchers.IO) {
+                accessTokenWebService.getAccessToken("client_credentials")
+            }
+        }
 
-    private fun getAuthenticationOkHttpClient(): OkHttpClient =
-        OkHttpClient.Builder()
-            .addInterceptor(AddAuthenticationHeaderInterceptor())
-            .build()
+    }
 
     private inner class AddAuthenticationHeaderInterceptor : Interceptor {
 
