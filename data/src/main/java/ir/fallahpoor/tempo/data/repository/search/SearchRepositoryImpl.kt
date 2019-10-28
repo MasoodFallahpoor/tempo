@@ -20,13 +20,13 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
         private const val TYPE = "artist,album,track,playlist"
     }
 
-    private var jobs = listOf<Job>()
+    private var job: Job? = null
 
     override fun search(query: String): LiveData<Resource<SearchEntity>> {
 
         val liveData = MutableLiveData<Resource<SearchEntity>>()
 
-        jobs = jobs + CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
 
             val resource: Resource<SearchEntity> =
                 try {
@@ -50,7 +50,7 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
     }
 
     override fun dispose() {
-        jobs.forEach { it.cancel() }
+        job?.cancel()
     }
 
 }

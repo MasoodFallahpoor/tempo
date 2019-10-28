@@ -5,6 +5,7 @@ import ir.fallahpoor.tempo.data.common.Resource
 
 interface AuthenticationRepository {
 
-    fun getAccessToken() : LiveData<Resource<Unit>>
+    fun getAccessToken(): LiveData<Resource<Unit>>
+    fun dispose()
 
 }

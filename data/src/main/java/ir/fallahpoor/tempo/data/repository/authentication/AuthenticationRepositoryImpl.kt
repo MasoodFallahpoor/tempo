@@ -9,6 +9,7 @@ import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
 import ir.fallahpoor.tempo.data.webservice.AccessTokenWebService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -16,6 +17,8 @@ class AuthenticationRepositoryImpl(
     private val accessTokenWebService: AccessTokenWebService,
     private val preferencesManager: PreferencesManager
 ) : AuthenticationRepository {
+
+    private var job: Job? = null
 
     override fun getAccessToken(): LiveData<Resource<Unit>> {
 
@@ -28,7 +31,7 @@ class AuthenticationRepositoryImpl(
         } else {
             // When access token doesn't exist, make a web service call to obtain a
             // access token
-            CoroutineScope(Dispatchers.IO).launch {
+            job = CoroutineScope(Dispatchers.IO).launch {
 
                 val resource: Resource<Unit> =
                     try {
@@ -53,6 +56,10 @@ class AuthenticationRepositoryImpl(
 
         return liveData
 
+    }
+
+    override fun dispose() {
+        job?.cancel()
     }
 
     private fun accessTokenExists() = preferencesManager.getAccessToken() != null
