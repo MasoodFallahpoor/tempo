@@ -27,7 +27,7 @@ class AuthenticationRepositoryImpl(
         if (accessTokenExists()) {
             // When access token exists, there is no need to do anything. Just return
             // a successful result
-            liveData.value = Resource.Success(null)
+            liveData.value = Resource.Success(Unit)
         } else {
             // When access token doesn't exist, make a web service call to obtain a
             // access token
@@ -40,7 +40,7 @@ class AuthenticationRepositoryImpl(
                         if (response.isSuccessful) {
                             val accessToken: String? = response.body()?.accessToken
                             preferencesManager.setAccessToken(accessToken)
-                            Resource.Success(null)
+                            Resource.Success(Unit)
                         } else {
                             Resource.Error(response.message())
                         }

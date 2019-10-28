@@ -31,13 +31,11 @@ class SearchViewModel
         searchQueryLiveData.value = query
     }
 
-    private fun transformResourceToViewState(resource: Resource<SearchEntity>): ViewState {
-        return if (resource.status == Resource.Status.SUCCESS) {
-            DataLoadedViewState(resource.data)
-        } else {
-            DataErrorViewState(resource.errorMessage!!)
+    private fun transformResourceToViewState(resource: Resource<SearchEntity>): ViewState =
+        when (resource) {
+            is Resource.Success -> DataLoadedViewState(resource.data)
+            is Resource.Error -> DataErrorViewState(resource.errorMessage)
         }
-    }
 
     override fun onCleared() {
         super.onCleared()

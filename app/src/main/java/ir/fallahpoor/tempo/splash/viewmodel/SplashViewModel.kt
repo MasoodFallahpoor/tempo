@@ -17,10 +17,9 @@ class SplashViewModel
 
     fun getAccessToken(): LiveData<ViewState> {
         return Transformations.map(authenticationRepository.getAccessToken()) { resource ->
-            if (resource.status == Resource.Status.SUCCESS) {
-                DataLoadedViewState(Unit)
-            } else {
-                DataErrorViewState(resource.errorMessage!!)
+            when (resource) {
+                is Resource.Success -> DataLoadedViewState(Unit)
+                is Resource.Error -> DataErrorViewState(resource.errorMessage)
             }
         }
     }
