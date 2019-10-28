@@ -44,11 +44,11 @@ class ArtistsRepositoryImpl
                     _getArtistRelatedArtists(artistId)
                 )
             } catch (t: Throwable) {
-                getErrorResource(ExceptionHumanizer.getHumanizedErrorMessage(t))
+                Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
             }
         }
 
-        postValue(liveData, resource)
+        liveData.postValue(resource)
 
         return liveData
 
@@ -100,9 +100,9 @@ class ArtistsRepositoryImpl
                 albumsResponse.body()!!.items,
                 relatedArtistsResponse.body()!!.artists
             )
-            getSuccessResource(artistAllInfoEntity)
+            Resource.Success(artistAllInfoEntity)
         } else {
-            getErrorResource(ExceptionHumanizer.SOMETHING_WENT_WRONG)
+            Resource.Error(ExceptionHumanizer.SOMETHING_WENT_WRONG)
         }
 
     }
@@ -110,23 +110,22 @@ class ArtistsRepositoryImpl
     override fun getArtist(artistId: String): LiveData<Resource<ArtistEntity>> {
 
         val liveData = MutableLiveData<Resource<ArtistEntity>>()
-        lateinit var resource: Resource<ArtistEntity>
 
         jobs = jobs + CoroutineScope(Dispatchers.IO).launch {
 
-            resource =
+            val resource: Resource<ArtistEntity> =
                 try {
                     val response: Response<ArtistEntity> = artistsWebService.getArtist(artistId)
                     if (response.isSuccessful) {
-                        getSuccessResource(response.body()!!)
+                        Resource.Success(response.body()!!)
                     } else {
-                        getErrorResource(response.message())
+                        Resource.Error(response.message())
                     }
                 } catch (t: Throwable) {
-                    getErrorResource(ExceptionHumanizer.getHumanizedErrorMessage(t))
+                    Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                 }
 
-            postValue(liveData, resource)
+            liveData.postValue(resource)
 
         }
 
@@ -137,24 +136,23 @@ class ArtistsRepositoryImpl
     override fun getArtistAlbums(artistId: String): LiveData<Resource<List<AlbumEntity>>> {
 
         val liveData = MutableLiveData<Resource<List<AlbumEntity>>>()
-        lateinit var resource: Resource<List<AlbumEntity>>
 
         jobs = jobs + CoroutineScope(Dispatchers.IO).launch {
 
-            resource =
+            val resource: Resource<List<AlbumEntity>> =
                 try {
                     val response: Response<AlbumsEnvelop> =
                         artistsWebService.getArtistAlbums(artistId, GROUPS, OFFSET, LIMIT)
                     if (response.isSuccessful) {
-                        getSuccessResource(response.body()?.items!!)
+                        Resource.Success(response.body()?.items!!)
                     } else {
-                        getErrorResource(response.message())
+                        Resource.Error(response.message())
                     }
                 } catch (t: Throwable) {
-                    getErrorResource(ExceptionHumanizer.getHumanizedErrorMessage(t))
+                    Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                 }
 
-            postValue(liveData, resource)
+            liveData.postValue(resource)
 
         }
 
@@ -165,24 +163,23 @@ class ArtistsRepositoryImpl
     override fun getArtistTopTracks(artistId: String): LiveData<Resource<List<TrackEntity>>> {
 
         val liveData = MutableLiveData<Resource<List<TrackEntity>>>()
-        lateinit var resource: Resource<List<TrackEntity>>
 
         jobs = jobs + CoroutineScope(Dispatchers.IO).launch {
 
-            resource =
+            val resource: Resource<List<TrackEntity>> =
                 try {
                     val response: Response<TracksEnvelop> =
                         artistsWebService.getArtistTopTracks(artistId, COUNTRY)
                     if (response.isSuccessful) {
-                        getSuccessResource(response.body()!!.tracks)
+                        Resource.Success(response.body()!!.tracks)
                     } else {
-                        getErrorResource(response.message())
+                        Resource.Error(response.message())
                     }
                 } catch (t: Throwable) {
-                    getErrorResource(ExceptionHumanizer.getHumanizedErrorMessage(t))
+                    Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                 }
 
-            postValue(liveData, resource)
+            liveData.postValue(resource)
 
         }
 
@@ -193,24 +190,23 @@ class ArtistsRepositoryImpl
     override fun getArtistRelatedArtists(artistId: String): LiveData<Resource<List<ArtistEntity>>> {
 
         val liveData = MutableLiveData<Resource<List<ArtistEntity>>>()
-        lateinit var resource: Resource<List<ArtistEntity>>
 
         jobs = jobs + CoroutineScope(Dispatchers.IO).launch {
 
-            resource =
+            val resource: Resource<List<ArtistEntity>> =
                 try {
                     val response: Response<ArtistsEnvelop> =
                         artistsWebService.getArtistRelatedArtists(artistId)
                     if (response.isSuccessful) {
-                        getSuccessResource(response.body()?.artists!!)
+                        Resource.Success(response.body()?.artists!!)
                     } else {
-                        getErrorResource(response.message())
+                        Resource.Error(response.message())
                     }
                 } catch (t: Throwable) {
-                    getErrorResource(ExceptionHumanizer.getHumanizedErrorMessage(t))
+                    Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                 }
 
-            postValue(liveData, resource)
+            liveData.postValue(resource)
 
         }
 
@@ -220,18 +216,6 @@ class ArtistsRepositoryImpl
 
     override fun dispose() {
         jobs.forEach { it.cancel() }
-    }
-
-    private fun <T> postValue(liveData: MutableLiveData<T>, resource: T) {
-        liveData.postValue(resource)
-    }
-
-    private fun <T> getErrorResource(errorMessage: String): Resource<T> {
-        return Resource.Error(errorMessage)
-    }
-
-    private fun <T> getSuccessResource(data: T): Resource<T> {
-        return Resource.Success(data)
     }
 
 }
