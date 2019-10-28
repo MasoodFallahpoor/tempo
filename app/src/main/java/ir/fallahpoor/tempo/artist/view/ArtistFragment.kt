@@ -161,21 +161,28 @@ class ArtistFragment : Fragment() {
         .build()
 
     private fun renderAlbums(albums: List<AlbumEntity>) {
-        with(artistAlbumsRecyclerView) {
-            layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            setHasFixedSize(true)
-            adapter = getAlbumsAdapter(albums)
-            addItemDecoration(
-                SpaceItemDecoration(
+        if (albums.isNullOrEmpty()) {
+            noArtistAlbumsTextView.visibility = View.VISIBLE
+            artistAlbumsRecyclerView.visibility = View.GONE
+        } else {
+            with(artistAlbumsRecyclerView) {
+                layoutManager = LinearLayoutManager(
                     context,
-                    8f,
-                    SpaceItemDecoration.Orientation.HORIZONTAL
+                    LinearLayoutManager.HORIZONTAL,
+                    false
                 )
-            )
+                setHasFixedSize(true)
+                adapter = getAlbumsAdapter(albums)
+                addItemDecoration(
+                    SpaceItemDecoration(
+                        context,
+                        8f,
+                        SpaceItemDecoration.Orientation.HORIZONTAL
+                    )
+                )
+                visibility = View.VISIBLE
+            }
+            noArtistAlbumsTextView.visibility = View.GONE
         }
     }
 
@@ -214,9 +221,9 @@ class ArtistFragment : Fragment() {
                         SpaceItemDecoration.Orientation.HORIZONTAL
                     )
                 )
+                visibility = View.VISIBLE
             }
             noRelatedArtistsTextView.visibility = View.GONE
-            artistRelatedArtistsRecyclerView.visibility = View.VISIBLE
         }
     }
 
