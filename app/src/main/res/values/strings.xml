@@ -16,7 +16,7 @@
     <string name="followers">Followers</string>
     <string name="not_available">N/A</string>
     <string name="related_artists">Related Artists</string>
-    <string name="top_tracks">Top Track(</string>
+    <string name="top_tracks">Top Tracks</string>
     <string name="no_related_artists">No related artist(s)</string>
     <string name="no_album">No album(s)</string>
 </resources>
