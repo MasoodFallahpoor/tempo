@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
-import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
-import ir.fallahpoor.tempo.common.viewstate.ViewState
+import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
 import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepository
@@ -35,8 +33,8 @@ class ArtistViewModel
 
     private fun transformResourceToViewState(resource: Resource<ArtistAllInfoEntity>): ViewState =
         when (resource) {
-            is Resource.Success -> DataLoadedViewState(resource.data)
-            is Resource.Error -> DataErrorViewState(resource.errorMessage)
+            is Resource.Success -> ViewState.DataLoaded(resource.data)
+            is Resource.Error -> ViewState.Error(resource.errorMessage)
         }
 
     override fun onCleared() {

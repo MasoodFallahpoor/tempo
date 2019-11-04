@@ -21,8 +21,7 @@ import ir.fallahpoor.tempo.artist.viewmodel.ArtistViewModel
 import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
-import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
-import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
+import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
@@ -107,8 +106,8 @@ class ArtistFragment : Fragment() {
             Observer { viewState ->
                 hideLoading()
                 when (viewState) {
-                    is DataLoadedViewState<*> -> renderArtistInformation(viewState.data as ArtistAllInfoEntity)
-                    is DataErrorViewState -> renderError(viewState.getMessage())
+                    is ViewState.DataLoaded<*> -> renderArtistInformation(viewState.data as ArtistAllInfoEntity)
+                    is ViewState.Error -> renderError(viewState.errorMessage)
                 }
             })
     }

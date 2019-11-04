@@ -20,8 +20,7 @@ import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.ViewModelFactory
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
-import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
-import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
+import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.data.entity.SearchEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
@@ -87,8 +86,8 @@ class SearchFragment : Fragment() {
             Observer { viewState ->
                 hideLoading()
                 when (viewState) {
-                    is DataLoadedViewState<*> -> renderSearchResult(viewState.data as SearchEntity)
-                    is DataErrorViewState -> renderError(viewState.getMessage())
+                    is ViewState.DataLoaded<*> -> renderSearchResult(viewState.data as SearchEntity)
+                    is ViewState.Error -> renderError(viewState.errorMessage)
                 }
             })
     }

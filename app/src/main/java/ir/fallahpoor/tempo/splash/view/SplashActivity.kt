@@ -10,8 +10,7 @@ import ir.fallahpoor.tempo.MainActivity
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.ViewModelFactory
-import ir.fallahpoor.tempo.common.viewstate.DataErrorViewState
-import ir.fallahpoor.tempo.common.viewstate.DataLoadedViewState
+import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
@@ -48,8 +47,8 @@ class SplashActivity : AppCompatActivity() {
             Observer { viewState ->
                 run {
                     when (viewState) {
-                        is DataLoadedViewState<*> -> launchMainActivity()
-                        is DataErrorViewState -> showErrorSnackbar(viewState.getMessage())
+                        is ViewState.DataLoaded<*> -> launchMainActivity()
+                        is ViewState.Error -> showErrorSnackbar(viewState.errorMessage)
                     }
                 }
             })
