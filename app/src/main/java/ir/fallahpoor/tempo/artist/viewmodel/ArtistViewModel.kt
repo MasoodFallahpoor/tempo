@@ -21,8 +21,8 @@ class ArtistViewModel
 
     val artist: LiveData<ViewState> =
         Transformations.map(
-            Transformations.switchMap(artistIdLiveData) { artistName: String ->
-                artistsRepository.getArtistAllInfo(artistName)
+            Transformations.switchMap(artistIdLiveData) { artistId: String ->
+                artistsRepository.getArtistAllInfo(artistId)
             }
         ) { resource: Resource<ArtistAllInfoEntity> ->
             when (resource) {
