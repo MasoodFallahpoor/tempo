@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -19,14 +20,13 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.ViewModelFactory
-import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.common.ViewState
+import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.SearchEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.search.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.list_item_search_result.*
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -131,21 +131,21 @@ class SearchFragment : Fragment() {
                 false
             )
 
-        setTitle(title)
-        setVisibilityOfMoreTextView(data)
+        setTitle(title, view)
+        setVisibilityOfMoreTextView(data, view)
         setupRecyclerView(data, view, type)
 
         searchResultsLinearLayout.addView(view)
 
     }
 
-    private fun setTitle(@StringRes title: Int) {
-        searchResultTitleTextView.text = getString(title)
+    private fun setTitle(@StringRes title: Int, view: View) {
+        view.findViewById<TextView>(R.id.searchResultTitleTextView).text = getString(title)
     }
 
-    private fun <T> setVisibilityOfMoreTextView(data: ListEntity<T>) {
+    private fun <T> setVisibilityOfMoreTextView(data: ListEntity<T>, view: View) {
         if (data.items.size >= data.total) {
-            moreSearchResultsTextView.visibility = View.GONE
+            view.findViewById<TextView>(R.id.moreSearchResultsTextView).visibility = View.GONE
         }
     }
 
