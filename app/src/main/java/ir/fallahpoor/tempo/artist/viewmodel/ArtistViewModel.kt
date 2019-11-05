@@ -21,21 +21,19 @@ class ArtistViewModel
 
     val artist: LiveData<ViewState> =
         Transformations.map(
-            Transformations.switchMap(artistIdLiveData) {
-                artistsRepository.getArtistAllInfo(it)
-            },
-            ::transformResourceToViewState
-        )
+            Transformations.switchMap(artistIdLiveData) { artistName: String ->
+                artistsRepository.getArtistAllInfo(artistName)
+            }
+        ) { resource: Resource<ArtistAllInfoEntity> ->
+            when (resource) {
+                is Resource.Success -> ViewState.DataLoaded(resource.data)
+                is Resource.Error -> ViewState.Error(resource.errorMessage)
+            }
+        }
 
     fun getArtist(artistId: String) {
         artistIdLiveData.value = artistId
     }
-
-    private fun transformResourceToViewState(resource: Resource<ArtistAllInfoEntity>): ViewState =
-        when (resource) {
-            is Resource.Success -> ViewState.DataLoaded(resource.data)
-            is Resource.Error -> ViewState.Error(resource.errorMessage)
-        }
 
     override fun onCleared() {
         super.onCleared()

@@ -13,14 +13,13 @@ class SplashViewModel
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
-    fun getAccessToken(): LiveData<ViewState> {
-        return Transformations.map(authenticationRepository.getAccessToken()) { resource ->
+    val accessToken: LiveData<ViewState> =
+        Transformations.map(authenticationRepository.getAccessToken()) { resource: Resource<Unit> ->
             when (resource) {
                 is Resource.Success -> ViewState.DataLoaded(Unit)
                 is Resource.Error -> ViewState.Error(resource.errorMessage)
             }
         }
-    }
 
     override fun onCleared() {
         super.onCleared()
