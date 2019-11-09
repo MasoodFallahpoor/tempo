@@ -19,4 +19,8 @@
     <string name="top_tracks">Top Tracks</string>
     <string name="no_related_artists">No related artist(s)</string>
     <string name="no_album">No album(s)</string>
+    <string name="openInSpotify">Open in Spotify</string>
+    <string name="some_went_wrong">Something went wrong</string>
+    <string name="spotify_not_installed">Spotify not installed</string>
+    <string name="install_spotify">Install Spotify</string>
 </resources>

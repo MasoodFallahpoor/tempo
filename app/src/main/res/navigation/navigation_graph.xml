@@ -53,7 +53,12 @@
         <argument
             android:name="artistName"
             app:argType="string" />
-        <argument android:name="artistImageUrl" />
+        <argument
+            android:name="artistImageUrl"
+            app:argType="string" />
+        <argument
+            android:name="artistUri"
+            app:argType="string" />
         <action
             android:id="@+id/action_artistFragment_self"
             app:destination="@id/artistFragment" />

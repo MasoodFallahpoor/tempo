@@ -1,9 +1,7 @@
 package ir.fallahpoor.tempo.artist.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,10 +16,11 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.artist.viewmodel.ArtistViewModel
+import ir.fallahpoor.tempo.common.Spotify
 import ir.fallahpoor.tempo.common.ViewModelFactory
+import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
-import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
@@ -39,6 +38,7 @@ class ArtistFragment : Fragment() {
     private var artistId: String? = null
     private var artistName: String? = null
     private var artistImageUrl: String? = null
+    private var artistUri: String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -56,6 +56,7 @@ class ArtistFragment : Fragment() {
         sharedElementReturnTransition = transition
 
         getArgumentsFromBundle(arguments)
+        setHasOptionsMenu(true)
 
     }
 
@@ -63,6 +64,7 @@ class ArtistFragment : Fragment() {
         artistId = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistId }
         artistName = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistName }
         artistImageUrl = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistImageUrl }
+        artistUri = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistUri }
     }
 
     override fun onCreateView(
@@ -89,6 +91,34 @@ class ArtistFragment : Fragment() {
         setupViewModel()
         observeViewModel()
         artistViewModel.getArtist(artistId ?: "")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_artist_fragment, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.openInSpotify -> {
+                if (Spotify.isSpotifyInstalled(context!!)) {
+                    Spotify.openArtistPage(context!!, artistUri)
+                } else {
+                    showInstallSpotifySnackbar()
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+                false
+            }
+        }
+
+    private fun showInstallSpotifySnackbar() {
+        Snackbar.make(artistImageView, R.string.spotify_not_installed, Snackbar.LENGTH_LONG)
+            .setAction(getString(R.string.install_spotify)) {
+                Spotify.installSpotify(context!!)
+            }
+            .show()
     }
 
     private fun injectViewModelFactory() {
@@ -244,7 +274,8 @@ class ArtistFragment : Fragment() {
                 val action = ArtistFragmentDirections.actionArtistFragmentSelf(
                     artist.id,
                     artist.name,
-                    artist.images[0].url
+                    artist.images[0].url,
+                    artist.uri
                 )
                 val extras = FragmentNavigatorExtras(
                     itemView.artistImageView to itemView.artistImageView.transitionName,

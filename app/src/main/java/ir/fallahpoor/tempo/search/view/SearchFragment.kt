@@ -166,7 +166,8 @@ class SearchFragment : Fragment() {
                 val action = SearchFragmentDirections.actionToArtistFragment(
                     artistEntity.id,
                     artistEntity.name,
-                    artistEntity.images[0].url
+                    artistEntity.images[0].url,
+                    artistEntity.uri
                 )
                 val extras = FragmentNavigatorExtras(
                     imageView to imageView.transitionName,

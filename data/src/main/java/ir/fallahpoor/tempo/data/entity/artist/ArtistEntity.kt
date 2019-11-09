@@ -14,5 +14,7 @@ data class ArtistEntity(
     @SerializedName("genres")
     val genres: List<String>,
     @SerializedName("followers")
-    val followers: FollowersEntity
+    val followers: FollowersEntity,
+    @SerializedName("uri")
+    val uri: String
 )
