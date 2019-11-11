@@ -123,9 +123,13 @@ class CategoriesFragment : Fragment() {
 
     private fun getSpace(): Float {
         val spanCount: Int = getSpanCount()
-        return ((getScreenWidthInDp(requireContext()) - (spanCount * 200)) / (spanCount + 1))
+        val imageWidthInDp: Int = resources.getInteger(R.integer.width_image_view)
+        return ((getScreenWidthInDp(requireContext()) - (spanCount * imageWidthInDp)) / (spanCount + 1))
     }
 
-    private fun getSpanCount(): Int = getScreenWidthInDp(requireContext()).toInt() / 200
+    private fun getSpanCount(): Int {
+        val imageWidthInDp: Int = resources.getInteger(R.integer.width_image_view)
+        return getScreenWidthInDp(requireContext()).toInt() / imageWidthInDp
+    }
 
 }
