@@ -63,23 +63,22 @@ class SpaceItemDecoration() : RecyclerView.ItemDecoration() {
         view: View
     ) {
 
-        with(outRect) {
+        val itemPosition = parent.getChildAdapterPosition(view)
 
+        with(outRect) {
             if (orientation == Orientation.VERTICAL) {
-                if (parent.getChildAdapterPosition(view) == 0) {
+                if (itemPosition == 0) {
                     top = spaceInPx
                 }
                 left = spaceInPx
             } else {
-                if (parent.getChildAdapterPosition(view) == 0) {
+                if (itemPosition == 0) {
                     left = spaceInPx
                 }
                 top = spaceInPx
             }
-
             right = spaceInPx
             bottom = spaceInPx
-
         }
 
     }
@@ -94,18 +93,12 @@ class SpaceItemDecoration() : RecyclerView.ItemDecoration() {
         val itemColumn = itemPosition % spanCount
 
         with(outRect) {
-
             if (itemPosition < spanCount) {
                 top = spaceInPx
             }
-
+            left = spaceInPx - (itemColumn * spaceInPx) / spanCount
+            right = ((itemColumn + 1) * spaceInPx) / spanCount
             bottom = spaceInPx
-            left = spaceInPx
-
-            if (itemColumn == spanCount - 1) {
-                right = spaceInPx
-            }
-
         }
 
     }

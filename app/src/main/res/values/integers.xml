@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="width_image_view">200</integer>
-    <integer name="height_image_view">200</integer>
+    <!--
+    width_image_view is R.dimen.width_image_view.
+    If R.dimen.width_image_view is changed then width_image_view must also change.
+    -->
+    <integer name="width_image_view">195</integer>
 </resources>
