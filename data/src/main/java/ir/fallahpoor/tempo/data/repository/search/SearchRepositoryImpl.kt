@@ -1,15 +1,11 @@
 package ir.fallahpoor.tempo.data.repository.search
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.SearchEntity
 import ir.fallahpoor.tempo.data.webservice.SearchWebService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class SearchRepositoryImpl(private val searchWebService: SearchWebService) : SearchRepository {
@@ -20,14 +16,8 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
         private const val TYPE = "artist,album,track,playlist"
     }
 
-    private var job: Job? = null
-
-    override fun search(query: String): LiveData<Resource<SearchEntity>> {
-
-        val liveData = MutableLiveData<Resource<SearchEntity>>()
-
-        job = CoroutineScope(Dispatchers.IO).launch {
-
+    override fun search(query: String): LiveData<Resource<SearchEntity>> =
+        liveData {
             val resource: Resource<SearchEntity> =
                 try {
                     val response: Response<SearchEntity> =
@@ -40,17 +30,10 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
                 } catch (t: Throwable) {
                     Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
                 }
-
-            liveData.postValue(resource)
-
+            emit(resource)
         }
 
-        return liveData
-
-    }
-
     override fun dispose() {
-        job?.cancel()
     }
 
 }
