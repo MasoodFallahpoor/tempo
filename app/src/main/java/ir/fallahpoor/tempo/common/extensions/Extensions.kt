@@ -2,6 +2,8 @@ package ir.fallahpoor.tempo.common.extensions
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -48,3 +50,9 @@ fun ImageView.load(url: String, onLoadingFinished: () -> Unit) {
         .into(this)
 
 }
+
+fun <I, O> LiveData<I>.map(mapFunction: (i: I) -> O): LiveData<O> =
+    Transformations.map(this, mapFunction)
+
+fun <I, O> LiveData<I>.switchMap(switchMapFunction: (i: I) -> LiveData<O>) =
+    Transformations.switchMap(this, switchMapFunction)

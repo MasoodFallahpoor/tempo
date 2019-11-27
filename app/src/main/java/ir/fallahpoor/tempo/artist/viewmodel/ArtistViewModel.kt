@@ -2,9 +2,10 @@ package ir.fallahpoor.tempo.artist.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import ir.fallahpoor.tempo.common.ViewState
+import ir.fallahpoor.tempo.common.extensions.map
+import ir.fallahpoor.tempo.common.extensions.switchMap
 import ir.fallahpoor.tempo.data.common.Resource
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
 import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepository
@@ -20,11 +21,10 @@ class ArtistViewModel
     private val artistIdLiveData = MutableLiveData<String>()
 
     val artist: LiveData<ViewState> =
-        Transformations.map(
-            Transformations.switchMap(artistIdLiveData) { artistId: String ->
-                artistsRepository.getArtistAllInfo(artistId)
-            }
-        ) { resource: Resource<ArtistAllInfoEntity> ->
+
+        artistIdLiveData.switchMap { artistId: String ->
+            artistsRepository.getArtistAllInfo(artistId)
+        }.map { resource: Resource<ArtistAllInfoEntity> ->
             when (resource) {
                 is Resource.Success -> ViewState.DataLoaded(resource.data)
                 is Resource.Error -> ViewState.Error(resource.errorMessage)
