@@ -35,9 +35,4 @@ class ArtistViewModel
         artistIdLiveData.value = artistId
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        artistsRepository.dispose()
-    }
-
 }

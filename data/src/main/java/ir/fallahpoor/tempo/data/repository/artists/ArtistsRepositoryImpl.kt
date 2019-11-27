@@ -134,7 +134,4 @@ class ArtistsRepositoryImpl
             emit(resource)
         }
 
-    override fun dispose() {
-    }
-
 }

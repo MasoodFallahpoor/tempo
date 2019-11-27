@@ -21,9 +21,4 @@ class SplashViewModel
             }
         }
 
-    override fun onCleared() {
-        super.onCleared()
-        authenticationRepository.dispose()
-    }
-
 }

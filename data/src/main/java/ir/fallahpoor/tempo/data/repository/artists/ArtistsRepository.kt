@@ -13,5 +13,4 @@ interface ArtistsRepository {
     fun getArtistTopTracks(artistId: String): LiveData<Resource<List<TrackEntity>>>
     fun getArtistRelatedArtists(artistId: String): LiveData<Resource<List<ArtistEntity>>>
     fun getArtistAllInfo(artistId: String): LiveData<Resource<ArtistAllInfoEntity>>
-    fun dispose()
 }

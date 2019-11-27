@@ -33,9 +33,4 @@ class SearchViewModel
         searchQueryLiveData.value = query
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        searchRepository.dispose()
-    }
-
 }

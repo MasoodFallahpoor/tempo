@@ -33,7 +33,4 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
             emit(resource)
         }
 
-    override fun dispose() {
-    }
-
 }
