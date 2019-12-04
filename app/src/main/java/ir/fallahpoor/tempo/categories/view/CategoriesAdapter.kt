@@ -51,7 +51,7 @@ class CategoriesAdapter(
                 itemView.categoryNameTextView.transitionName = category.id + "-TV"
                 itemView.categoryImageView.transitionName = category.id + "-IV"
                 itemView.setOnClickListener {
-                    clickListener.invoke(
+                    clickListener(
                         category,
                         itemView.categoryImageView,
                         itemView.categoryNameTextView
