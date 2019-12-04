@@ -45,11 +45,9 @@ class SplashActivity : AppCompatActivity() {
     private fun observeViewModel() {
         splashViewModel.accessToken.observe(this,
             Observer { viewState ->
-                run {
-                    when (viewState) {
-                        is ViewState.DataLoaded<*> -> launchMainActivity()
-                        is ViewState.Error -> showErrorSnackbar(viewState.errorMessage)
-                    }
+                when (viewState) {
+                    is ViewState.DataLoaded<*> -> launchMainActivity()
+                    is ViewState.Error -> showErrorSnackbar(viewState.errorMessage)
                 }
             })
     }
