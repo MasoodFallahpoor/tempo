@@ -9,11 +9,8 @@ object Dependencies {
     private const val lifecycleVersion = "2.2.0-rc01"
     private const val glideVersion = "4.10.0"
     private const val pagingVersion = "2.1.0"
-    private const val junitVersion = "4.12"
-    private const val truthVersion = "1.0"
 
     object App {
-
         const val navigationFragment =
             "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
         const val navigationUi = "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
@@ -35,12 +32,6 @@ object Dependencies {
         const val paging = "androidx.paging:paging-runtime-ktx:$pagingVersion"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
         const val klaster = "com.github.rongi:klaster:0.3.5"
-
-    }
-
-    object AppTest {
-        const val junit = "junit:junit:$junitVersion"
-        const val truth = "com.google.truth:truth:$truthVersion"
     }
 
     object Data {
@@ -55,13 +46,16 @@ object Dependencies {
     }
 
     object DataTest {
-        const val junit = "junit:junit:$junitVersion"
-        const val truth = "com.google.truth:truth:$truthVersion"
-        const val testCore = "androidx.test:core:1.2.0"
         const val robolectric = "org.robolectric:robolectric:4.3.1"
+        const val retrofitMock = "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
+    }
+
+    object CommonTest {
         const val mockito = "org.mockito:mockito-inline:3.0.0"
         const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
-        const val retrofitMock = "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
+        const val testCore = "androidx.test:core:1.2.0"
+        const val junit = "androidx.test.ext:junit:1.1.1"
+        const val truth = "androidx.test.ext:truth:1.2.0"
     }
 
 }

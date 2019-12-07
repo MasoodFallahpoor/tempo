@@ -51,7 +51,10 @@ dependencies {
     implementation(Dependencies.App.paging)
     implementation(Dependencies.App.shimmer)
     implementation(Dependencies.App.klaster)
-    testImplementation(Dependencies.AppTest.junit)
-    testImplementation(Dependencies.AppTest.truth)
+    testImplementation(Dependencies.CommonTest.mockito)
+    testImplementation(Dependencies.CommonTest.testCore)
+    testImplementation(Dependencies.CommonTest.junit)
+    testImplementation(Dependencies.CommonTest.truth)
+    testImplementation(Dependencies.CommonTest.archCoreTesting)
     implementation(project(":data"))
 }
