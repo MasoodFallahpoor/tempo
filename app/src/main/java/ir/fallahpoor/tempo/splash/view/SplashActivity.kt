@@ -43,7 +43,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        splashViewModel.accessToken.observe(this,
+        splashViewModel.getAccessToken().observe(this,
             Observer { viewState ->
                 when (viewState) {
                     is ViewState.DataLoaded<*> -> launchMainActivity()

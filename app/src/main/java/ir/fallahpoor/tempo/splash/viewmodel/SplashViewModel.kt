@@ -10,15 +10,17 @@ import javax.inject.Inject
 
 class SplashViewModel
 @Inject constructor(
-    authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
-    val accessToken: LiveData<ViewState> =
-        authenticationRepository.getAccessToken().map { resource: Resource<Unit> ->
-            when (resource) {
-                is Resource.Success -> ViewState.DataLoaded(Unit)
-                is Resource.Error -> ViewState.Error(resource.errorMessage)
+    fun getAccessToken(): LiveData<ViewState> {
+        return authenticationRepository.getAccessToken()
+            .map { resource: Resource<Unit> ->
+                when (resource) {
+                    is Resource.Success -> ViewState.DataLoaded(Unit)
+                    is Resource.Error -> ViewState.Error(resource.errorMessage)
+                }
             }
-        }
+    }
 
 }
