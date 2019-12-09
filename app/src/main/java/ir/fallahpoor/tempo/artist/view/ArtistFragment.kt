@@ -116,7 +116,7 @@ class ArtistFragment : Fragment() {
     private fun showInstallSpotifySnackbar() {
         Snackbar.make(artistImageView, R.string.spotify_not_installed, Snackbar.LENGTH_LONG)
             .setAction(getString(R.string.install_spotify)) {
-                Spotify.installSpotify(context!!)
+                Spotify.openSpotifyPageInPlayStore(context!!)
             }
             .show()
     }

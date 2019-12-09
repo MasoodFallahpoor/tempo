@@ -28,27 +28,26 @@ object Spotify {
         }
     }
 
-    fun installSpotify(context: Context) {
+    fun openSpotifyPageInPlayStore(context: Context) {
 
         val referrer =
             "adjust_campaign=PACKAGE_NAME&adjust_tracker=ndjczk&utm_source=adjust_preinstall"
 
-        val uri = try {
-            Uri.parse("market://details")
+        try {
+            val uri = Uri.parse("market://details")
                 .buildUpon()
                 .appendQueryParameter("id", SPOTIFY_PACKAGE_NAME)
                 .appendQueryParameter("referrer", referrer)
                 .build()
+            context.startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (ex: ActivityNotFoundException) {
-            Uri.parse("https://play.google.com/store/apps/details")
+            val uri = Uri.parse("https://play.google.com/store/apps/details")
                 .buildUpon()
                 .appendQueryParameter("id", SPOTIFY_PACKAGE_NAME)
                 .appendQueryParameter("referrer", referrer)
                 .build()
-
+            context.startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
-
-        context.startActivity(Intent(Intent.ACTION_VIEW, uri))
 
     }
 
