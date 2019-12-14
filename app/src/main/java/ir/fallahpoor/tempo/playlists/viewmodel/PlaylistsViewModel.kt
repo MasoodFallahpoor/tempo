@@ -19,16 +19,16 @@ class PlaylistsViewModel
 
     private val categoryIdLiveData = MutableLiveData<String>()
     private val playlistsResult: LiveData<ListResult<PlaylistEntity>> =
-        categoryIdLiveData.map {
-            categoriesRepository.getPlaylists(it)
+        categoryIdLiveData.map { categoryId: String ->
+            categoriesRepository.getPlaylists(categoryId)
         }
 
     val playlists: LiveData<PagedList<PlaylistEntity>> =
-        playlistsResult.switchMap {
-            it.data
+        playlistsResult.switchMap { l: ListResult<PlaylistEntity> ->
+            l.data
         }
-    val state: LiveData<State> = playlistsResult.switchMap {
-        it.state
+    val state: LiveData<State> = playlistsResult.switchMap { l: ListResult<PlaylistEntity> ->
+        l.state
     }
 
     fun getPlaylists(categoryId: String) {

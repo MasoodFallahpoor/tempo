@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PositionalDataSource
 import com.google.common.truth.Truth
 import ir.fallahpoor.tempo.data.TestData
+import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
@@ -25,7 +26,6 @@ class CategoriesDataSourceTest {
     companion object {
         private const val OFFSET = 0
         private const val LIMIT = 20
-        private const val ERROR_MESSAGE = "Something went wrong"
     }
 
     @Rule
@@ -86,7 +86,7 @@ class CategoriesDataSourceTest {
         // Then
         Mockito.verify(categoriesWebService).getCategories(OFFSET, LIMIT)
         Mockito.verifyZeroInteractions(loadInitialCallback)
-        val expectedState = State(State.Status.ERROR, ERROR_MESSAGE)
+        val expectedState = State(State.Status.ERROR, ExceptionHumanizer.SOMETHING_WENT_WRONG)
         Truth.assertThat(actualStateLiveData.value).isEqualTo(expectedState)
 
     }
@@ -127,7 +127,7 @@ class CategoriesDataSourceTest {
         // Then
         Mockito.verify(categoriesWebService).getCategories(OFFSET + LIMIT, LIMIT)
         Mockito.verifyZeroInteractions(loadRangeCallback)
-        val expectedState = State(State.Status.ERROR_MORE, ERROR_MESSAGE)
+        val expectedState = State(State.Status.ERROR_MORE, ExceptionHumanizer.SOMETHING_WENT_WRONG)
         Truth.assertThat(actualStateLiveData.value).isEqualTo(expectedState)
 
     }
