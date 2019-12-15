@@ -1,6 +1,7 @@
 package ir.fallahpoor.tempo.search.view
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,9 +41,13 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        injectViewModelFactory()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        injectViewModelFactory()
         setupSearchView()
         setupViewModel()
         observeViewModel()

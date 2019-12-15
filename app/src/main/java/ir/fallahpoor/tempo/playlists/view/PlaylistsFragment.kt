@@ -1,5 +1,6 @@
 package ir.fallahpoor.tempo.playlists.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -69,9 +70,13 @@ class PlaylistsFragment : Fragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        injectViewModelFactory()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        injectViewModelFactory()
         setupAdapter()
         setupRecyclerView()
         setupViewModel()

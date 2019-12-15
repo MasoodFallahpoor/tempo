@@ -1,5 +1,6 @@
 package ir.fallahpoor.tempo.artist.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -85,9 +86,13 @@ class ArtistFragment : Fragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        injectViewModelFactory()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        injectViewModelFactory()
         setupViewModel()
         observeViewModel()
         artistViewModel.getArtist(artistId ?: "")

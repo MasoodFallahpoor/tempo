@@ -1,5 +1,6 @@
 package ir.fallahpoor.tempo.categories.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,9 +36,13 @@ class CategoriesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_categories, container, false)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        injectViewModelFactory()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        injectViewModelFactory()
         setupAdapter()
         setupRecyclerView()
         setupViewModel()
