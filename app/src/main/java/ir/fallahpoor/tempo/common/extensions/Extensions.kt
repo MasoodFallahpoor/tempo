@@ -12,7 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import ir.fallahpoor.tempo.R
 
-fun ImageView.load(url: String, onLoadingFinished: () -> Unit) {
+fun ImageView.load(url: String, onLoadingFinished: (() -> Unit)? = null) {
 
     val listener = object : RequestListener<Drawable> {
         override fun onLoadFailed(
@@ -21,7 +21,7 @@ fun ImageView.load(url: String, onLoadingFinished: () -> Unit) {
             target: Target<Drawable>?,
             isFirstResource: Boolean
         ): Boolean {
-            onLoadingFinished()
+            onLoadingFinished?.invoke()
             return false
         }
 
@@ -32,7 +32,7 @@ fun ImageView.load(url: String, onLoadingFinished: () -> Unit) {
             dataSource: DataSource?,
             isFirstResource: Boolean
         ): Boolean {
-            onLoadingFinished()
+            onLoadingFinished?.invoke()
             return false
         }
 

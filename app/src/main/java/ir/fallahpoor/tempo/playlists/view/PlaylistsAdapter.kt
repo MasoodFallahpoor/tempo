@@ -8,8 +8,8 @@ import androidx.annotation.NonNull
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
+import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_playlist.view.*
@@ -44,10 +44,7 @@ class PlaylistsAdapter(
             } else {
                 itemView.shimmerLayout.visibility = View.GONE
                 itemView.shimmerLayout.stopShimmer()
-                Glide.with(context)
-                    .load(playlist.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.playlistImageView)
+                itemView.playlistImageView.load(playlist.images[0].url)
             }
         }
 

@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
+import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
@@ -141,10 +142,7 @@ class SearchAdapter<T>(
             itemView.artistImageView.transitionName = artist.id + "-IV"
 
             if (artist.images.isNotEmpty()) {
-                Glide.with(context)
-                    .load(artist.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.artistImageView)
+                itemView.artistImageView.load(artist.images[0].url)
             }
 
         }
@@ -166,10 +164,7 @@ class SearchAdapter<T>(
             itemView.trackArtistNameTextView.text = track.artists[0].name
 
             if (track.album.images.isNotEmpty()) {
-                Glide.with(context)
-                    .load(track.album.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.trackCoverImageView)
+                itemView.trackCoverImageView.load(track.album.images[0].url)
             }
 
         }
@@ -189,10 +184,7 @@ class SearchAdapter<T>(
             itemView.playlistNameTextView.text = playlist.name
 
             if (playlist.images.isNotEmpty()) {
-                Glide.with(context)
-                    .load(playlist.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.playlistCoverImageView)
+                itemView.playlistCoverImageView.load(playlist.images[0].url)
             }
 
         }

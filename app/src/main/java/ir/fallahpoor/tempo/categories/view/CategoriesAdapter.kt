@@ -10,8 +10,8 @@ import androidx.annotation.NonNull
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
+import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_category.view.*
@@ -57,10 +57,7 @@ class CategoriesAdapter(
                         itemView.categoryNameTextView
                     )
                 }
-                Glide.with(context)
-                    .load(category.icons[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.categoryImageView)
+                itemView.categoryImageView.load(category.icons[0].url)
             }
 
         }

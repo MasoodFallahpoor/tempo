@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
-import com.bumptech.glide.Glide
 import com.github.rongi.klaster.Klaster
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
@@ -227,10 +226,7 @@ class ArtistFragment : Fragment() {
             val album = albums[position]
             itemView.albumNameTextView.text = album.name
             if (album.images.isNotEmpty()) {
-                Glide.with(activity!!)
-                    .load(album.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.albumCoverImageView)
+                itemView.albumCoverImageView.load(album.images[0].url)
             }
         }
         .build()
@@ -270,10 +266,7 @@ class ArtistFragment : Fragment() {
             itemView.artistNameTextView.transitionName = artist.id + "-TV"
             itemView.artistImageView.transitionName = artist.id + "-IV"
             if (artist.images.isNotEmpty()) {
-                Glide.with(activity!!)
-                    .load(artist.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .into(itemView.artistImageView)
+                itemView.artistImageView.load(artist.images[0].url)
             }
             itemView.setOnClickListener {
                 val action = ArtistFragmentDirections.actionArtistFragmentSelf(
