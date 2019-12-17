@@ -61,10 +61,14 @@ class ArtistFragment : Fragment() {
     }
 
     private fun getArgumentsFromBundle(arguments: Bundle?) {
-        artistId = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistId }
-        artistName = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistName }
-        artistImageUrl = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistImageUrl }
-        artistUri = arguments?.let { ArtistFragmentArgs.fromBundle(it).artistUri }
+        arguments?.let {
+            with(ArtistFragmentArgs) {
+                artistId = fromBundle(it).artistId
+                artistName = fromBundle(it).artistName
+                artistImageUrl = fromBundle(it).artistImageUrl
+                artistUri = fromBundle(it).artistUri
+            }
+        }
     }
 
     override fun onCreateView(
