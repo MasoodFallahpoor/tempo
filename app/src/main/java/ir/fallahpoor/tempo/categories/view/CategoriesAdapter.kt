@@ -1,6 +1,5 @@
 package ir.fallahpoor.tempo.categories.view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +16,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_category.view.*
 
 class CategoriesAdapter(
-    private val context: Context,
-    private val clickListener: ((CategoryEntity, ImageView, TextView) -> Unit)
+    private val clickListener: (CategoryEntity, ImageView, TextView) -> Unit
 ) : PagedListAdapter<CategoryEntity, CategoriesAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -37,29 +35,29 @@ class CategoriesAdapter(
             get() = itemView
 
         fun bindData(category: CategoryEntity?) {
-
-            if (category == null) {
-                itemView.shimmerLayout.visibility = View.VISIBLE
-                itemView.categoryNameTextView.visibility = View.INVISIBLE
-                itemView.categoryImageView.setImageResource(0)
-                itemView.setOnClickListener {}
-            } else {
-                itemView.shimmerLayout.visibility = View.GONE
-                itemView.shimmerLayout.stopShimmer()
-                itemView.categoryNameTextView.visibility = View.VISIBLE
-                itemView.categoryNameTextView.text = category.name
-                itemView.categoryNameTextView.transitionName = category.id + "-TV"
-                itemView.categoryImageView.transitionName = category.id + "-IV"
-                itemView.setOnClickListener {
-                    clickListener(
-                        category,
-                        itemView.categoryImageView,
-                        itemView.categoryNameTextView
-                    )
+            with(itemView) {
+                if (category == null) {
+                    shimmerLayout.visibility = View.VISIBLE
+                    categoryNameTextView.visibility = View.INVISIBLE
+                    categoryImageView.setImageResource(0)
+                    setOnClickListener {}
+                } else {
+                    shimmerLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmer()
+                    categoryNameTextView.visibility = View.VISIBLE
+                    categoryNameTextView.text = category.name
+                    categoryNameTextView.transitionName = category.id + "-TV"
+                    categoryImageView.transitionName = category.id + "-IV"
+                    setOnClickListener {
+                        clickListener(
+                            category,
+                            categoryImageView,
+                            categoryNameTextView
+                        )
+                    }
+                    categoryImageView.load(category.icons[0].url)
                 }
-                itemView.categoryImageView.load(category.icons[0].url)
             }
-
         }
 
     }

@@ -54,7 +54,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        categoriesAdapter = CategoriesAdapter(context!!) { category, imageView, textView ->
+        categoriesAdapter = CategoriesAdapter { category, imageView, textView ->
             val action = CategoriesFragmentDirections.actionToPlaylistsFragment(
                 category.id,
                 category.name,
