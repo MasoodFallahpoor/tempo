@@ -36,15 +36,16 @@ class PlaylistsAdapter(
             get() = itemView
 
         fun bindData(playlist: PlaylistEntity?) {
-
-            if (playlist == null) {
-                itemView.shimmerLayout.visibility = View.VISIBLE
-                itemView.playlistImageView.setImageResource(0)
-                itemView.setOnClickListener {}
-            } else {
-                itemView.shimmerLayout.visibility = View.GONE
-                itemView.shimmerLayout.stopShimmer()
-                itemView.playlistImageView.load(playlist.images[0].url)
+            with(itemView) {
+                if (playlist == null) {
+                    shimmerLayout.visibility = View.VISIBLE
+                    playlistImageView.setImageResource(0)
+                    setOnClickListener {}
+                } else {
+                    shimmerLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmer()
+                    playlistImageView.load(playlist.images[0].url)
+                }
             }
         }
 
