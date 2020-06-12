@@ -16,9 +16,10 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.artist.viewmodel.ArtistViewModel
+import ir.fallahpoor.tempo.common.DataLoadedState
+import ir.fallahpoor.tempo.common.ErrorState
 import ir.fallahpoor.tempo.common.Spotify
 import ir.fallahpoor.tempo.common.ViewModelFactory
-import ir.fallahpoor.tempo.common.ViewState
 import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
@@ -30,8 +31,6 @@ import kotlinx.android.synthetic.main.list_item_album.view.*
 import kotlinx.android.synthetic.main.list_item_search_result_artist.view.*
 import kotlinx.android.synthetic.main.list_item_track.view.*
 import javax.inject.Inject
-
-// FIXME: When page is loaded, page auto scrolls to 'top tracks' RecyclerView
 
 class ArtistFragment : Fragment() {
 
@@ -139,13 +138,13 @@ class ArtistFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        artistViewModel.artist.observe(
+        artistViewModel.getViewState().observe(
             viewLifecycleOwner,
             Observer { viewState ->
                 hideLoading()
                 when (viewState) {
-                    is ViewState.DataLoaded<*> -> renderArtistInformation(viewState.data as ArtistAllInfoEntity)
-                    is ViewState.Error -> renderError(viewState.errorMessage)
+                    is DataLoadedState -> renderArtistInformation(viewState.data)
+                    is ErrorState -> renderError(viewState.errorMessage)
                 }
             })
     }
