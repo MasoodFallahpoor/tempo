@@ -16,6 +16,7 @@ import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
 import ir.fallahpoor.tempo.common.*
+import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import kotlinx.android.synthetic.main.fragment_categories.*
 import javax.inject.Inject
 
@@ -68,6 +69,7 @@ class CategoriesFragment : Fragment() {
             layoutManager = GridLayoutManager(context, 2)
             adapter = categoriesAdapter
             setHasFixedSize(true)
+            addItemDecoration(SpaceItemDecoration(requireContext(), 8f, 2))
             addOnScrollListener(object : EndlessScrollListener() {
                 override fun onLoadMore() {
                     categoriesViewModel.getCategories()
