@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,10 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.artist.viewmodel.ArtistViewModel
-import ir.fallahpoor.tempo.common.DataLoadedState
-import ir.fallahpoor.tempo.common.ErrorState
-import ir.fallahpoor.tempo.common.Spotify
-import ir.fallahpoor.tempo.common.ViewModelFactory
+import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
@@ -41,13 +38,11 @@ class ArtistFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var artistViewModel: ArtistViewModel
+    private val artistViewModel: ArtistViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-
-        postponeEnterTransition()
 
         val transition =
             TransitionInflater.from(context).inflateTransition(android.R.transition.move)
@@ -93,7 +88,6 @@ class ArtistFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupViewModel()
         observeViewModel()
         artistViewModel.getArtist(artistId ?: "")
     }
@@ -105,8 +99,8 @@ class ArtistFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.openInSpotify -> {
-                if (Spotify.isSpotifyInstalled(context!!)) {
-                    Spotify.openArtistPage(context!!, artistUri)
+                if (Spotify.isSpotifyInstalled(requireContext())) {
+                    Spotify.openArtistPage(requireContext(), artistUri)
                 } else {
                     showInstallSpotifySnackbar()
                 }
@@ -121,7 +115,7 @@ class ArtistFragment : Fragment() {
     private fun showInstallSpotifySnackbar() {
         Snackbar.make(artistImageView, R.string.spotify_not_installed, Snackbar.LENGTH_LONG)
             .setAction(getString(R.string.install_spotify)) {
-                Spotify.openSpotifyPageInPlayStore(context!!)
+                Spotify.openSpotifyPageInPlayStore(requireContext())
             }
             .show()
     }
@@ -130,19 +124,20 @@ class ArtistFragment : Fragment() {
         (activity?.application as TempoApplication).appComponent.inject(this)
     }
 
-    private fun setupViewModel() {
-        artistViewModel = ViewModelProvider(this, viewModelFactory)
-            .get(ArtistViewModel::class.java)
-    }
-
     private fun observeViewModel() {
         artistViewModel.getViewState().observe(
             viewLifecycleOwner,
             Observer { viewState ->
-                hideLoading()
                 when (viewState) {
-                    is DataLoadedState -> renderArtistInformation(viewState.data)
-                    is ErrorState -> renderError(viewState.errorMessage)
+                    is LoadingState -> showLoading()
+                    is DataLoadedState -> {
+                        hideLoading()
+                        renderArtistInformation(viewState.data)
+                    }
+                    is ErrorState -> {
+                        hideLoading()
+                        renderError(viewState.errorMessage)
+                    }
                 }
             })
     }
@@ -180,7 +175,12 @@ class ArtistFragment : Fragment() {
             )
             setHasFixedSize(true)
             adapter = getTopTracksAdapter(topTracks)
-            addItemDecoration(DividerItemDecoration(activity!!, DividerItemDecoration.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
         }
     }
 
