@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.*
+import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
 import kotlinx.android.synthetic.main.fragment_playlists.*
@@ -88,6 +89,7 @@ class PlaylistsFragment : Fragment() {
             layoutManager = GridLayoutManager(context, 2)
             adapter = playlistsAdapter
             setHasFixedSize(true)
+            addItemDecoration(SpaceItemDecoration(requireContext(), 8f, 2))
             addOnScrollListener(object : EndlessScrollListener() {
                 override fun onLoadMore() {
                     playlistsViewModel.getPlaylists(categoryId ?: "")
@@ -128,10 +130,10 @@ class PlaylistsFragment : Fragment() {
     private fun renderPlaylists(playlists: List<PlaylistEntity>) {
         if (playlistsAdapter.itemCount == 0 && playlists.isEmpty()) {
             playlistsRecyclerView.visibility = View.GONE
-            noPlaylistTextView.visibility = View.VISIBLE
+            noPlaylistTextView.fadeIn()
         } else {
-            playlistsRecyclerView.visibility = View.VISIBLE
             playlistsAdapter.addPlaylists(playlists)
+            playlistsRecyclerView.fadeIn()
         }
     }
 

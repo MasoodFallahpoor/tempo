@@ -55,6 +55,7 @@ class CategoriesAdapter(
                 }
                 categoryImageView.load(category.icons[0].url) {
                     placeholder(R.drawable.placeholder)
+                    crossfade(true)
                 }
             }
         }

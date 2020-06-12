@@ -37,7 +37,10 @@ class PlaylistsAdapter : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolde
             get() = itemView
 
         fun bindData(playlist: PlaylistEntity) {
-            itemView.playlistImageView.load(playlist.images[0].url)
+            itemView.playlistImageView.load(playlist.images[0].url) {
+                placeholder(R.drawable.placeholder)
+                crossfade(true)
+            }
         }
 
     }

@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
-import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
@@ -22,7 +21,6 @@ import kotlinx.android.synthetic.main.list_item_search_result_playlist.view.*
 import kotlinx.android.synthetic.main.list_item_search_result_track.view.*
 
 class SearchAdapter<T>(
-    private val context: Context,
     private val data: ListEntity<T>,
     private val type: Type,
     private val clickListener: ((T, ImageView, TextView) -> Unit)?
@@ -116,10 +114,9 @@ class SearchAdapter<T>(
             itemView.albumArtistNameTextView.text = album.artists[0].name
 
             if (album.images.isNotEmpty()) {
-                Glide.with(context)
-                    .load(album.images[0].url)
-                    .placeholder(R.drawable.placeholder)
-                    .into(itemView.albumCoverImageView)
+                itemView.albumCoverImageView.load(album.images[0].url) {
+                    placeholder(R.drawable.placeholder)
+                }
             }
 
         }

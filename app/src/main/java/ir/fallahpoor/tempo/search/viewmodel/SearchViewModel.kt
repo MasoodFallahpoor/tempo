@@ -15,8 +15,6 @@ class SearchViewModel
     private val searchRepository: SearchRepository
 ) : BaseViewModel<SearchEntity>() {
 
-    private val searchResultLiveData = MutableLiveData<ViewState<SearchEntity>>()
-
     fun search(query: String) {
 
         setViewState(LoadingState())

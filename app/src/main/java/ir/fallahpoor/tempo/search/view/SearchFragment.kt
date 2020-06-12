@@ -11,8 +11,8 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +33,7 @@ class SearchFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +48,6 @@ class SearchFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupSearchView()
-        createViewModel()
         observeViewModel()
     }
 
@@ -79,11 +78,6 @@ class SearchFragment : Fragment() {
         view?.clearFocus()
     }
 
-    private fun createViewModel() {
-        searchViewModel = ViewModelProvider(this, viewModelFactory)
-            .get(SearchViewModel::class.java)
-    }
-
     private fun observeViewModel() {
         searchViewModel.getViewState().observe(
             viewLifecycleOwner,
@@ -107,16 +101,16 @@ class SearchFragment : Fragment() {
     private fun renderSearchResult(searchEntity: SearchEntity) {
         hideLoading()
         if (noSearchResult(searchEntity)) {
-            noSearchResultTextView.visibility = View.VISIBLE
-            searchResultsLinearLayout.visibility = View.GONE
+            noSearchResultTextView.fadeIn()
+            searchScrollView.fadeOut()
         } else {
-            noSearchResultTextView.visibility = View.GONE
+            noSearchResultTextView.fadeOut()
             searchResultsLinearLayout.removeAllViews()
-            searchResultsLinearLayout.visibility = View.VISIBLE
             addRecyclerView(searchEntity.artists, SearchAdapter.Type.ARTIST, R.string.artists)
             addRecyclerView(searchEntity.albums, SearchAdapter.Type.ALBUM, R.string.albums)
             addRecyclerView(searchEntity.tracks, SearchAdapter.Type.TRACK, R.string.tracks)
             addRecyclerView(searchEntity.playlists, SearchAdapter.Type.PLAYLIST, R.string.playlists)
+            searchScrollView.fadeIn()
         }
     }
 
@@ -166,7 +160,7 @@ class SearchFragment : Fragment() {
                 false
             )
             setHasFixedSize(true)
-            adapter = SearchAdapter(context, data, type) { t, imageView, textView ->
+            adapter = SearchAdapter(data, type) { t, imageView, textView ->
                 val artistEntity = t as ArtistEntity
                 val action = SearchFragmentDirections.actionToArtistFragment(
                     artistEntity.id,
@@ -204,7 +198,6 @@ class SearchFragment : Fragment() {
         hideLoading()
         Snackbar.make(searchResultsLinearLayout, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
-                showLoading()
                 searchViewModel.search(searchView.query.toString())
             }
             .show()
