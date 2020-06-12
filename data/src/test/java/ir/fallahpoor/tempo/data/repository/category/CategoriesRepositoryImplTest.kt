@@ -12,7 +12,6 @@ import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSource
 import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
-import ir.fallahpoor.tempo.data.repository.ListResult
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import org.junit.Before
 import org.junit.Rule

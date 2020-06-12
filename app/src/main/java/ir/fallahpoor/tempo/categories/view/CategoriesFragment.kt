@@ -6,21 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
-import ir.fallahpoor.tempo.common.Device.getScreenWidthInDp
-import ir.fallahpoor.tempo.common.ViewModelFactory
-import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
-import ir.fallahpoor.tempo.data.common.State
-import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
+import ir.fallahpoor.tempo.common.*
 import kotlinx.android.synthetic.main.fragment_categories.*
 import javax.inject.Inject
 
@@ -28,7 +23,7 @@ class CategoriesFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var categoriesViewModel: CategoriesViewModel
+    private val categoriesViewModel: CategoriesViewModel by viewModels { viewModelFactory }
     private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreateView(
@@ -41,16 +36,16 @@ class CategoriesFragment : Fragment() {
         injectViewModelFactory()
     }
 
+    private fun injectViewModelFactory() {
+        (activity?.application as TempoApplication).appComponent.inject(this)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupAdapter()
         setupRecyclerView()
-        setupViewModel()
         observeViewModel()
-    }
-
-    private fun injectViewModelFactory() {
-        (activity?.application as TempoApplication).appComponent.inject(this)
+        categoriesViewModel.getCategories()
     }
 
     private fun setupAdapter() {
@@ -70,44 +65,34 @@ class CategoriesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         with(categoriesRecyclerView) {
-            val spanCount: Int = getSpanCount()
-            layoutManager = GridLayoutManager(context, spanCount)
+            layoutManager = GridLayoutManager(context, 2)
             adapter = categoriesAdapter
             setHasFixedSize(true)
-            addItemDecoration(SpaceItemDecoration(context, getSpace(), spanCount))
+            addOnScrollListener(object : EndlessScrollListener() {
+                override fun onLoadMore() {
+                    categoriesViewModel.getCategories()
+                }
+            })
         }
     }
 
-    private fun setupViewModel() {
-        categoriesViewModel = ViewModelProvider(this, viewModelFactory)
-            .get(CategoriesViewModel::class.java)
-    }
-
     private fun observeViewModel() {
-
-        categoriesViewModel.categories.observe(
-            viewLifecycleOwner,
-            Observer { categories: PagedList<CategoryEntity> ->
-                categoriesAdapter.submitList(categories)
-            }
-        )
-
-        categoriesViewModel.state.observe(
-            viewLifecycleOwner,
-            Observer { state: State ->
-                when (state.status) {
-                    State.Status.LOADED -> hideLoading()
-                    State.Status.LOADING -> showLoading()
-                    State.Status.LOADING_MORE -> {
-                    }
-                    State.Status.ERROR, State.Status.ERROR_MORE -> {
-                        hideLoading()
-                        renderError(state.message)
+        categoriesViewModel.getViewState()
+            .observe(viewLifecycleOwner,
+                Observer { viewState ->
+                    when (viewState) {
+                        is LoadingState -> showLoading()
+                        is DataLoadedState -> {
+                            hideLoading()
+                            categoriesAdapter.addCategories(viewState.data)
+                        }
+                        is ErrorState -> {
+                            hideLoading()
+                            showErrorSnackbar(viewState.errorMessage)
+                        }
                     }
                 }
-            }
-        )
-
+            )
     }
 
     private fun showLoading() {
@@ -118,23 +103,12 @@ class CategoriesFragment : Fragment() {
         progressBar.visibility = View.GONE
     }
 
-    private fun renderError(message: String) {
-        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_LONG)
+    private fun showErrorSnackbar(message: String) {
+        Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.try_again) {
-                // TODO what to do here?
+                categoriesViewModel.getCategories()
             }
             .show()
-    }
-
-    private fun getSpace(): Float {
-        val spanCount: Int = getSpanCount()
-        val imageWidthInDp: Int = resources.getInteger(R.integer.width_image_view)
-        return ((getScreenWidthInDp(requireContext()) - (spanCount * imageWidthInDp)) / (spanCount + 1))
-    }
-
-    private fun getSpanCount(): Int {
-        val imageWidthInDp: Int = resources.getInteger(R.integer.width_image_view)
-        return getScreenWidthInDp(requireContext()).toInt() / imageWidthInDp
     }
 
 }

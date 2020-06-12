@@ -6,19 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
-import ir.fallahpoor.tempo.common.Device.getScreenWidthInDp
-import ir.fallahpoor.tempo.common.ViewModelFactory
+import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.extensions.load
-import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
-import ir.fallahpoor.tempo.data.common.State
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
 import kotlinx.android.synthetic.main.fragment_playlists.*
@@ -32,7 +28,7 @@ class PlaylistsFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var playlistsViewModel: PlaylistsViewModel
+    private val playlistsViewModel: PlaylistsViewModel by viewModels { viewModelFactory }
     private lateinit var playlistsAdapter: PlaylistsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,8 +37,8 @@ class PlaylistsFragment : Fragment() {
 
         postponeEnterTransition()
 
-        val transition =
-            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        val transition = TransitionInflater.from(context)
+            .inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
 
@@ -79,7 +75,6 @@ class PlaylistsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         setupAdapter()
         setupRecyclerView()
-        setupViewModel()
         observeViewModel()
         playlistsViewModel.getPlaylists(categoryId ?: "")
     }
@@ -89,44 +84,36 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        playlistsAdapter = PlaylistsAdapter(context!!, null)
+        playlistsAdapter = PlaylistsAdapter()
     }
 
     private fun setupRecyclerView() {
         with(playlistsRecyclerView) {
-            val spanCount: Int = getSpanCount()
-            layoutManager = GridLayoutManager(context, spanCount)
+            layoutManager = GridLayoutManager(context, 2)
             adapter = playlistsAdapter
             setHasFixedSize(true)
-            addItemDecoration(SpaceItemDecoration(context, getSpace(), spanCount))
+            addOnScrollListener(object : EndlessScrollListener() {
+                override fun onLoadMore() {
+                    playlistsViewModel.getPlaylists(categoryId ?: "")
+                }
+            })
         }
-    }
-
-    private fun setupViewModel() {
-        playlistsViewModel = ViewModelProvider(this, viewModelFactory)
-            .get(PlaylistsViewModel::class.java)
     }
 
     private fun observeViewModel() {
 
-        playlistsViewModel.playlists.observe(
+        playlistsViewModel.getViewState().observe(
             viewLifecycleOwner,
-            Observer { playlists: PagedList<PlaylistEntity> ->
-                renderPlaylists(playlists)
-            }
-        )
-
-        playlistsViewModel.state.observe(
-            viewLifecycleOwner,
-            Observer { state: State ->
-                when (state.status) {
-                    State.Status.LOADED -> hideLoading()
-                    State.Status.LOADING -> showLoading()
-                    State.Status.LOADING_MORE -> {
-                    }
-                    State.Status.ERROR, State.Status.ERROR_MORE -> {
+            Observer { viewState ->
+                when (viewState) {
+                    is LoadingState -> showLoading()
+                    is DataLoadedState -> {
                         hideLoading()
-                        renderError(state.message)
+                        renderPlaylists(viewState.data)
+                    }
+                    is ErrorState -> {
+                        hideLoading()
+                        showErrorSnackbar(viewState.errorMessage)
                     }
                 }
             }
@@ -142,33 +129,22 @@ class PlaylistsFragment : Fragment() {
         progressBar.visibility = View.GONE
     }
 
-    private fun renderPlaylists(playlists: PagedList<PlaylistEntity>) {
-        if (playlists.isEmpty()) {
+    private fun renderPlaylists(playlists: List<PlaylistEntity>) {
+        if (playlistsAdapter.itemCount == 0 && playlists.isEmpty()) {
             playlistsRecyclerView.visibility = View.GONE
             noPlaylistTextView.visibility = View.VISIBLE
         } else {
             playlistsRecyclerView.visibility = View.VISIBLE
-            playlistsAdapter.submitList(playlists)
+            playlistsAdapter.addPlaylists(playlists)
         }
     }
 
-    private fun renderError(message: String) {
+    private fun showErrorSnackbar(message: String) {
         Snackbar.make(playlistsRecyclerView, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
                 playlistsViewModel.getPlaylists(categoryId ?: "")
             }
             .show()
-    }
-
-    private fun getSpace(): Float {
-        val spanCount: Int = getSpanCount()
-        val imageWidthInDp: Int = resources.getInteger(R.integer.width_image_view)
-        return ((getScreenWidthInDp(requireContext()) - (spanCount * imageWidthInDp)) / (spanCount + 1))
-    }
-
-    private fun getSpanCount(): Int {
-        val imageWidthInDp: Int = resources.getInteger(R.integer.width_image_view)
-        return getScreenWidthInDp(requireContext()).toInt() / imageWidthInDp
     }
 
 }

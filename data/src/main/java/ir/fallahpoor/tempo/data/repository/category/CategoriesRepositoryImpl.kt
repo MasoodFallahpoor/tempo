@@ -1,52 +1,31 @@
 package ir.fallahpoor.tempo.data.repository.category
 
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSourceFactory
-import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
+import io.reactivex.Single
+import ir.fallahpoor.tempo.data.entity.category.CategoriesEnvelop
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
+import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
-import ir.fallahpoor.tempo.data.repository.ListResult
+import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
+import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import javax.inject.Inject
 
 class CategoriesRepositoryImpl
 @Inject constructor(
-    private val categoriesDataSourceFactory: CategoriesDataSourceFactory,
-    private val playlistsDataSourceFactory: PlaylistsDataSourceFactory
+    private val categoriesWebService: CategoriesWebService
 ) : CategoriesRepository {
 
-    private val pagedListConfig = PagedList.Config.Builder()
-        .setPrefetchDistance(10)
-        .setPageSize(20)
-        .build()
-
-    override fun getCategories(): ListResult<CategoryEntity> {
-
-        val categoriesLiveData: LiveData<PagedList<CategoryEntity>> =
-            LivePagedListBuilder(categoriesDataSourceFactory, pagedListConfig)
-                .build()
-
-        return ListResult(
-            categoriesLiveData,
-            categoriesDataSourceFactory.stateLiveData
-        )
-
+    override fun getCategories(offset: Int, limit: Int): Single<ListEntity<CategoryEntity>> {
+        return categoriesWebService.getCategories(offset, limit)
+            .map { t: CategoriesEnvelop -> t.categoriesEntity }
     }
 
-    override fun getPlaylists(categoryId: String): ListResult<PlaylistEntity> {
-
-        playlistsDataSourceFactory.categoryId = categoryId
-
-        val playlistsLiveData: LiveData<PagedList<PlaylistEntity>> =
-            LivePagedListBuilder(playlistsDataSourceFactory, pagedListConfig)
-                .build()
-
-        return ListResult(
-            playlistsLiveData,
-            playlistsDataSourceFactory.stateLiveData
-        )
-
+    override fun getPlaylists(
+        categoryId: String,
+        offset: Int,
+        limit: Int
+    ): Single<ListEntity<PlaylistEntity>> {
+        return categoriesWebService.getPlaylists(categoryId, offset, limit)
+            .map { t: PlaylistsEnvelop -> t.playlistsEntity }
     }
 
 }

@@ -5,8 +5,6 @@ import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import ir.fallahpoor.tempo.data.common.PreferencesManager
-import ir.fallahpoor.tempo.data.datasource.category.CategoriesDataSourceFactory
-import ir.fallahpoor.tempo.data.datasource.playlist.PlaylistsDataSourceFactory
 import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepository
 import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepositoryImpl
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
@@ -25,10 +23,9 @@ class AppModule(private val context: Context) {
 
     @Provides
     internal fun provideCategoryRepository(
-        categoriesDataSourceFactory: CategoriesDataSourceFactory,
-        playlistsDataSourceFactory: PlaylistsDataSourceFactory
+        categoriesWebService: CategoriesWebService
     ): CategoriesRepository =
-        CategoriesRepositoryImpl(categoriesDataSourceFactory, playlistsDataSourceFactory)
+        CategoriesRepositoryImpl(categoriesWebService)
 
     @Provides
     internal fun provideAuthenticationRepository(
