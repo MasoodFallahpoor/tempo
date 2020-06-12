@@ -1,13 +1,12 @@
 package ir.fallahpoor.tempo.data.webservice
 
 import android.util.Base64
+import io.reactivex.schedulers.Schedulers
 import ir.fallahpoor.tempo.data.common.PreferencesManager
 import ir.fallahpoor.tempo.data.entity.AccessTokenEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import okhttp3.*
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,6 +25,7 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
     private val retrofitApi = Retrofit.Builder()
         .baseUrl(API_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
         .client(getApiOkHttpClient())
         .build()
 
@@ -34,23 +34,6 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
             .addInterceptor(AddHeadersInterceptor())
             .authenticator(Authenticator())
             .build()
-
-    private val retrofitAuthentication = Retrofit.Builder()
-        .baseUrl(AUTHENTICATION_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(getAuthenticationOkHttpClient())
-        .build()
-
-    private fun getAuthenticationOkHttpClient(): OkHttpClient =
-        OkHttpClient.Builder()
-            .addInterceptor(AddAuthenticationHeaderInterceptor())
-            .build()
-
-    fun <S> createApiService(serviceClass: Class<S>): S =
-        retrofitApi.create(serviceClass)
-
-    fun <S> createAuthenticationService(serviceClass: Class<S>): S =
-        retrofitAuthentication.create(serviceClass)
 
     private inner class AddHeadersInterceptor : Interceptor {
 
@@ -76,16 +59,14 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
 
         override fun authenticate(route: Route?, response: Response): Request? {
 
-            runBlocking {
-                val accessTokenResponse: retrofit2.Response<AccessTokenEntity> = getAccessToken()
-                val newAccessToken: String? =
-                    if (response.isSuccessful) {
-                        accessTokenResponse.body()?.accessToken
-                    } else {
-                        null
-                    }
-                preferencesManager.setAccessToken(newAccessToken)
-            }
+            val accessTokenResponse: retrofit2.Response<AccessTokenEntity> = getAccessToken()
+            val newAccessToken: String? =
+                if (response.isSuccessful) {
+                    accessTokenResponse.body()?.accessToken
+                } else {
+                    null
+                }
+            preferencesManager.setAccessToken(newAccessToken)
 
             return response.request().newBuilder()
                 .header(
@@ -96,15 +77,24 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
 
         }
 
-        private suspend fun getAccessToken(): retrofit2.Response<AccessTokenEntity> {
+        private fun getAccessToken(): retrofit2.Response<AccessTokenEntity> {
             val accessTokenWebService =
                 createAuthenticationService(AccessTokenWebService::class.java)
-            return withContext(Dispatchers.IO) {
-                accessTokenWebService.getAccessToken("client_credentials")
-            }
+            return accessTokenWebService.getAccessToken("client_credentials").execute()
         }
 
     }
+
+    private val retrofitAuthentication = Retrofit.Builder()
+        .baseUrl(AUTHENTICATION_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(getAuthenticationOkHttpClient())
+        .build()
+
+    private fun getAuthenticationOkHttpClient(): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(AddAuthenticationHeaderInterceptor())
+            .build()
 
     private inner class AddAuthenticationHeaderInterceptor : Interceptor {
 
@@ -124,5 +114,11 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
         }
 
     }
+
+    fun <S> createApiService(serviceClass: Class<S>): S =
+        retrofitApi.create(serviceClass)
+
+    fun <S> createAuthenticationService(serviceClass: Class<S>): S =
+        retrofitAuthentication.create(serviceClass)
 
 }

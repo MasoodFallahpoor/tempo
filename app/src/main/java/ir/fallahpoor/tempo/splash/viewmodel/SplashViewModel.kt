@@ -1,26 +1,33 @@
 package ir.fallahpoor.tempo.splash.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import ir.fallahpoor.tempo.common.ViewState
-import ir.fallahpoor.tempo.common.extensions.map
-import ir.fallahpoor.tempo.data.common.Resource
+import io.reactivex.disposables.Disposable
+import ir.fallahpoor.tempo.common.*
+import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
 import javax.inject.Inject
 
 class SplashViewModel
 @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
-) : ViewModel() {
+) : BaseViewModel<Unit>() {
 
-    fun getAccessToken(): LiveData<ViewState> {
-        return authenticationRepository.getAccessToken()
-            .map { resource: Resource<Unit> ->
-                when (resource) {
-                    is Resource.Success -> ViewState.DataLoaded(Unit)
-                    is Resource.Error -> ViewState.Error(resource.errorMessage)
+    fun getAccessToken() {
+
+        setViewState(LoadingState())
+
+        val d: Disposable = authenticationRepository.getAccessToken()
+            .subscribe(
+                {
+                    setViewState(DataLoadedState(Unit))
+                },
+                { t: Throwable ->
+                    val message: String = ExceptionHumanizer.getHumanizedErrorMessage(t)
+                    setViewState(ErrorState(message))
                 }
-            }
+            )
+
+        addDisposable(d)
+
     }
 
 }

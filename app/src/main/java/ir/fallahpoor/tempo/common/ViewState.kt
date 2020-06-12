@@ -1,8 +1,7 @@
 package ir.fallahpoor.tempo.common
 
-interface ViewState {
+sealed class ViewState<T>
 
-    data class DataLoaded<T>(val data: T) : ViewState
-    data class Error(val errorMessage: String) : ViewState
-
-}
+class DataLoadedState<T>(val data: T) : ViewState<T>()
+class ErrorState<T>(val errorMessage: String) : ViewState<T>()
+class LoadingState<T> : ViewState<T>()

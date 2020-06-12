@@ -28,14 +28,24 @@ android {
 
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
     implementation(Dependencies.App.kotlin)
     implementation(Dependencies.App.appCompat)
     implementation(Dependencies.App.coreKtx)
+    implementation(Dependencies.App.fragmentKtx)
     implementation(Dependencies.App.constraintLayout)
     implementation(Dependencies.App.legacySupportV4)
+    implementation(Dependencies.App.rxJava)
+    implementation(Dependencies.App.rxAndroid)
     implementation(Dependencies.App.recyclerView)
     implementation(Dependencies.App.navigationFragment)
     implementation(Dependencies.App.navigationUi)
@@ -48,8 +58,6 @@ dependencies {
     implementation(Dependencies.App.glide)
     kapt(Dependencies.App.glideCompiler)
     implementation(Dependencies.App.materialProgressBar)
-    implementation(Dependencies.App.paging)
-    implementation(Dependencies.App.shimmer)
     implementation(Dependencies.App.klaster)
     testImplementation(Dependencies.CommonTest.mockito)
     testImplementation(Dependencies.CommonTest.testCore)
