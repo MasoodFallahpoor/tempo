@@ -20,8 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
-import ir.fallahpoor.tempo.common.ViewModelFactory
-import ir.fallahpoor.tempo.common.ViewState
+import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.SearchEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
@@ -49,7 +48,7 @@ class SearchFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupSearchView()
-        setupViewModel()
+        createViewModel()
         observeViewModel()
     }
 
@@ -80,19 +79,19 @@ class SearchFragment : Fragment() {
         view?.clearFocus()
     }
 
-    private fun setupViewModel() {
+    private fun createViewModel() {
         searchViewModel = ViewModelProvider(this, viewModelFactory)
             .get(SearchViewModel::class.java)
     }
 
     private fun observeViewModel() {
-        searchViewModel.searchResult.observe(
+        searchViewModel.getViewState().observe(
             viewLifecycleOwner,
             Observer { viewState ->
-                hideLoading()
                 when (viewState) {
-                    is ViewState.DataLoaded<*> -> renderSearchResult(viewState.data as SearchEntity)
-                    is ViewState.Error -> renderError(viewState.errorMessage)
+                    is LoadingState -> showLoading()
+                    is DataLoadedState -> renderSearchResult(viewState.data)
+                    is ErrorState -> renderError(viewState.errorMessage)
                 }
             })
     }
@@ -106,6 +105,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun renderSearchResult(searchEntity: SearchEntity) {
+        hideLoading()
         if (noSearchResult(searchEntity)) {
             noSearchResultTextView.visibility = View.VISIBLE
             searchResultsLinearLayout.visibility = View.GONE
@@ -201,6 +201,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun renderError(message: String) {
+        hideLoading()
         Snackbar.make(searchResultsLinearLayout, message, Snackbar.LENGTH_LONG)
             .setAction(R.string.try_again) {
                 showLoading()

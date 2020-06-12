@@ -1,12 +1,8 @@
 package ir.fallahpoor.tempo.data.repository.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
-import ir.fallahpoor.tempo.data.common.Resource
+import io.reactivex.Single
 import ir.fallahpoor.tempo.data.entity.SearchEntity
 import ir.fallahpoor.tempo.data.webservice.SearchWebService
-import retrofit2.Response
 
 class SearchRepositoryImpl(private val searchWebService: SearchWebService) : SearchRepository {
 
@@ -16,21 +12,7 @@ class SearchRepositoryImpl(private val searchWebService: SearchWebService) : Sea
         private const val TYPE = "artist,album,track,playlist"
     }
 
-    override fun search(query: String): LiveData<Resource<SearchEntity>> =
-        liveData {
-            val resource: Resource<SearchEntity> =
-                try {
-                    val response: Response<SearchEntity> =
-                        searchWebService.search(query, TYPE, OFFSET, LIMIT)
-                    if (response.isSuccessful) {
-                        Resource.Success(response.body()!!)
-                    } else {
-                        Resource.Error(response.message())
-                    }
-                } catch (t: Throwable) {
-                    Resource.Error(ExceptionHumanizer.getHumanizedErrorMessage(t))
-                }
-            emit(resource)
-        }
+    override fun search(query: String): Single<SearchEntity> =
+        searchWebService.search(query, TYPE, OFFSET, LIMIT)
 
 }
