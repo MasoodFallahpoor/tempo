@@ -48,7 +48,7 @@
                         android:id="@+id/artistImageView"
                         android:layout_width="@dimen/width_image_view"
                         android:layout_height="@dimen/height_image_view"
-                        android:src="@drawable/placeholder_category" />
+                        android:src="@drawable/placeholder" />
 
                     <TextView
                         android:id="@+id/artistNameTextView"

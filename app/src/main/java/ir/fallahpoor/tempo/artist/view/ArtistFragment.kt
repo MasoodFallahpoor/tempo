@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
+import coil.api.load
 import com.github.rongi.klaster.Klaster
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
@@ -20,7 +21,6 @@ import ir.fallahpoor.tempo.common.DataLoadedState
 import ir.fallahpoor.tempo.common.ErrorState
 import ir.fallahpoor.tempo.common.Spotify
 import ir.fallahpoor.tempo.common.ViewModelFactory
-import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
@@ -82,9 +82,7 @@ class ArtistFragment : Fragment() {
         artistNameTextView.text = artistName
         artistNameTextView.transitionName = "$artistId-TV"
         artistImageView.transitionName = "$artistId-IV"
-        artistImageView.load(artistImageUrl!!) {
-            startPostponedEnterTransition()
-        }
+        artistImageView.load(artistImageUrl!!)
 
     }
 

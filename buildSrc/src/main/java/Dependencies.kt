@@ -29,8 +29,7 @@ object Dependencies {
         const val lifecycle = "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
         const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion"
         const val material = "com.google.android.material:material:1.2.0-alpha01"
-        const val glide = "com.github.bumptech.glide:glide:$glideVersion"
-        const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
+        const val coil = "io.coil-kt:coil:0.11.0"
         const val materialProgressBar = "me.zhanghai.android.materialprogressbar:library:1.6.1"
         const val klaster = "com.github.rongi:klaster:0.3.5"
     }

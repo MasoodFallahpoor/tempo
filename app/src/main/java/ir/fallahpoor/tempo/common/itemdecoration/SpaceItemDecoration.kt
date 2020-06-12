@@ -50,7 +50,7 @@ class SpaceItemDecoration() : RecyclerView.ItemDecoration() {
     ) {
 
         if (layoutManagerType == LayoutManagerType.LINEAR) {
-            setSpacesForLinearLayout(outRect, parent, view)
+            setSpacesForLinearLayout(parent, view, outRect)
         } else {
             setSpacesForGridLayout(parent, view, outRect)
         }
@@ -58,9 +58,9 @@ class SpaceItemDecoration() : RecyclerView.ItemDecoration() {
     }
 
     private fun setSpacesForLinearLayout(
-        outRect: Rect,
         parent: RecyclerView,
-        view: View
+        view: View,
+        outRect: Rect
     ) {
 
         val itemPosition = parent.getChildAdapterPosition(view)

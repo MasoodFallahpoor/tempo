@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -87,6 +88,7 @@ class CategoriesFragment : Fragment() {
                         is DataLoadedState -> {
                             hideLoading()
                             categoriesAdapter.addCategories(viewState.data)
+                            categoriesRecyclerView.fadeIn()
                         }
                         is ErrorState -> {
                             hideLoading()
@@ -98,11 +100,11 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun showLoading() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.fadeIn()
     }
 
     private fun hideLoading() {
-        progressBar.visibility = View.GONE
+        progressBar.fadeOut()
     }
 
     private fun showErrorSnackbar(message: String) {

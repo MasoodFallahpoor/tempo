@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_playlist.view.*

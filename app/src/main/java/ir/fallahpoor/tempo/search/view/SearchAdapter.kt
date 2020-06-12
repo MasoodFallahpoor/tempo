@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.bumptech.glide.Glide
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.entity.album.AlbumEntity
 import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
@@ -118,7 +118,7 @@ class SearchAdapter<T>(
             if (album.images.isNotEmpty()) {
                 Glide.with(context)
                     .load(album.images[0].url)
-                    .placeholder(R.drawable.placeholder_category)
+                    .placeholder(R.drawable.placeholder)
                     .into(itemView.albumCoverImageView)
             }
 

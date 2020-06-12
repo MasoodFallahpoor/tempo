@@ -10,11 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
+import coil.api.load
 import com.google.android.material.snackbar.Snackbar
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.*
-import ir.fallahpoor.tempo.common.extensions.load
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
 import kotlinx.android.synthetic.main.fragment_playlists.*
@@ -34,8 +34,6 @@ class PlaylistsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-
-        postponeEnterTransition()
 
         val transition = TransitionInflater.from(context)
             .inflateTransition(android.R.transition.move)
@@ -60,9 +58,7 @@ class PlaylistsFragment : Fragment() {
         categoryIconImageView.transitionName = "$categoryId-IV"
         categoryNameTextView.text = categoryName
         categoryNameTextView.transitionName = "$categoryId-TV"
-        categoryIconImageView.load(categoryIconUrl!!) {
-            startPostponedEnterTransition()
-        }
+        categoryIconImageView.load(categoryIconUrl!!)
 
     }
 

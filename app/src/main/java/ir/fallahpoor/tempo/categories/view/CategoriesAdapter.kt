@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.api.load
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.data.entity.category.CategoryEntity
 import kotlinx.android.extensions.LayoutContainer
@@ -53,11 +53,9 @@ class CategoriesAdapter(
                         categoryNameTextView
                     )
                 }
-                Glide.with(this)
-                    .load(category.icons[0].url)
-                    .placeholder(R.drawable.placeholder_category)
-                    .centerCrop()
-                    .into(categoryImageView)
+                categoryImageView.load(category.icons[0].url) {
+                    placeholder(R.drawable.placeholder)
+                }
             }
         }
 

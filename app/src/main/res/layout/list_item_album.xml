@@ -15,7 +15,7 @@
             android:layout_width="@dimen/width_image_view"
             android:layout_height="@dimen/height_image_view"
             android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_category"
+            android:src="@drawable/placeholder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
