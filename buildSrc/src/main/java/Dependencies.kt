@@ -1,8 +1,8 @@
 object Dependencies {
 
-    private const val navigationVersion = "1.0.0"
-    private const val kotlinVersion = "1.3.50"
-    private const val retrofitVersion = "2.6.2"
+    private const val navigationVersion = "2.3.0-rc1"
+    private const val kotlinVersion = "1.3.72"
+    private const val retrofitVersion = "2.9.0"
     private const val gsonVersion = "2.8.6"
     private const val injectVersion = "1"
     private const val daggerVersion = "2.25.2"
@@ -32,8 +32,6 @@ object Dependencies {
         const val glide = "com.github.bumptech.glide:glide:$glideVersion"
         const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
         const val materialProgressBar = "me.zhanghai.android.materialprogressbar:library:1.6.1"
-        const val paging = "androidx.paging:paging-runtime-ktx:$pagingVersion"
-        const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
         const val klaster = "com.github.rongi:klaster:0.3.5"
     }
 
@@ -46,8 +44,6 @@ object Dependencies {
         const val gson = "com.google.code.gson:gson:$gsonVersion"
         const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc01"
         const val inject = "javax.inject:javax.inject:$injectVersion"
-        const val paging = "androidx.paging:paging-runtime-ktx:$pagingVersion"
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
     }
 
     object DataTest {
