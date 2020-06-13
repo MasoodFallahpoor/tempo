@@ -92,7 +92,7 @@ class PlaylistsFragment : Fragment() {
             addItemDecoration(SpaceItemDecoration(requireContext(), 8f, 2))
             addOnScrollListener(object : EndlessScrollListener() {
                 override fun onLoadMore() {
-                    playlistsViewModel.getPlaylists(categoryId ?: "")
+                    playlistsViewModel.getMorePlaylists(categoryId ?: "")
                 }
             })
         }

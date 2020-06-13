@@ -21,33 +21,45 @@ class PlaylistsViewModel
         const val LIMIT = 20
     }
 
+    private var playlists = mutableListOf<PlaylistEntity>()
     private var totalItems = Int.MAX_VALUE
     private var offset = 0
 
     fun getPlaylists(categoryId: String) {
-
-        if (morePlaylistsAvailable()) {
-
-            setViewState(LoadingState())
-
-            val d: Disposable = categoriesRepository.getPlaylists(categoryId, offset, LIMIT)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { p: ListEntity<PlaylistEntity> ->
-                        totalItems = p.total
-                        offset += LIMIT
-                        setViewState(DataLoadedState(p.items))
-                    },
-                    { t: Throwable ->
-                        val message: String = ExceptionHumanizer.getHumanizedErrorMessage(t)
-                        setViewState(ErrorState(message))
-                    }
-                )
-
-            addDisposable(d)
-
+        if (playlists.isEmpty()) {
+            _getPlaylists(categoryId)
+        } else {
+            setViewState(DataLoadedState(playlists))
         }
+    }
 
+    private fun _getPlaylists(categoryId: String) {
+
+        setViewState(LoadingState())
+
+        val d: Disposable = categoriesRepository.getPlaylists(categoryId, offset, LIMIT)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { p: ListEntity<PlaylistEntity> ->
+                    playlists.addAll(p.items)
+                    totalItems = p.total
+                    offset += LIMIT
+                    setViewState(DataLoadedState(p.items))
+                },
+                { t: Throwable ->
+                    val message: String = ExceptionHumanizer.getHumanizedErrorMessage(t)
+                    setViewState(ErrorState(message))
+                }
+            )
+
+        addDisposable(d)
+
+    }
+
+    fun getMorePlaylists(categoryId: String) {
+        if (morePlaylistsAvailable()) {
+            _getPlaylists(categoryId)
+        }
     }
 
     private fun morePlaylistsAvailable() = offset < totalItems
