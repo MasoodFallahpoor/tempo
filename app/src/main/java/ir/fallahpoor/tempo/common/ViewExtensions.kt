@@ -17,7 +17,8 @@ fun View.fadeIn() {
     visibility = View.VISIBLE
     animate()
         .alpha(1f)
-        .duration = ANIM_DURATION_MS
+        .setDuration(ANIM_DURATION_MS)
+        .setListener(null)
 
 }
 

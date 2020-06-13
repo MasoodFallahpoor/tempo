@@ -20,38 +20,45 @@
         app:mpb_useIntrinsicPadding="false" />
 
     <ScrollView
-        android:id="@+id/searchScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/space_small"
         android:scrollbars="vertical"
-        android:visibility="invisible"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/searchViewCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressBar">
 
-        <LinearLayout
-            android:id="@+id/searchResultsLinearLayout"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/searchResultsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/noSearchResultTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/space_small"
+                android:text="@string/no_search_result"
+                android:textSize="@dimen/text_size_normal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/searchViewCardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
+        </FrameLayout>
 
     </ScrollView>
-
-    <TextView
-        android:id="@+id/noSearchResultTextView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:padding="@dimen/space_small"
-        android:text="@string/no_search_result"
-        android:textSize="@dimen/text_size_normal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/searchViewCardView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchViewCardView"

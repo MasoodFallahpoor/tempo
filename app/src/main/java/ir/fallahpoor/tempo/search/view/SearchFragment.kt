@@ -60,7 +60,6 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     hideKeyboard()
-                    showLoading()
                     searchViewModel.search(query)
                 }
                 return true
@@ -102,7 +101,7 @@ class SearchFragment : Fragment() {
         hideLoading()
         if (noSearchResult(searchEntity)) {
             noSearchResultTextView.fadeIn()
-            searchScrollView.fadeOut()
+            searchResultsLinearLayout.fadeOut()
         } else {
             noSearchResultTextView.fadeOut()
             searchResultsLinearLayout.removeAllViews()
@@ -110,7 +109,7 @@ class SearchFragment : Fragment() {
             addRecyclerView(searchEntity.albums, SearchAdapter.Type.ALBUM, R.string.albums)
             addRecyclerView(searchEntity.tracks, SearchAdapter.Type.TRACK, R.string.tracks)
             addRecyclerView(searchEntity.playlists, SearchAdapter.Type.PLAYLIST, R.string.playlists)
-            searchScrollView.fadeIn()
+            searchResultsLinearLayout.fadeIn()
         }
     }
 
