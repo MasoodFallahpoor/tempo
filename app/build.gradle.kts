@@ -58,6 +58,7 @@ dependencies {
     implementation(Dependencies.App.coil)
     implementation(Dependencies.App.materialProgressBar)
     implementation(Dependencies.App.klaster)
+    testImplementation(Dependencies.CommonTest.robolectric)
     testImplementation(Dependencies.CommonTest.mockito)
     testImplementation(Dependencies.CommonTest.testCore)
     testImplementation(Dependencies.CommonTest.junit)

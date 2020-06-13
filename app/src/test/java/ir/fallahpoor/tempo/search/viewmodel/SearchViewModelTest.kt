@@ -1,13 +1,11 @@
 package ir.fallahpoor.tempo.search.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
+import io.reactivex.Single
 import ir.fallahpoor.tempo.TestData
-import ir.fallahpoor.tempo.common.ViewState
-import ir.fallahpoor.tempo.data.common.Resource
-import ir.fallahpoor.tempo.data.entity.SearchEntity
+import ir.fallahpoor.tempo.common.DataLoadedState
+import ir.fallahpoor.tempo.common.ErrorState
 import ir.fallahpoor.tempo.data.repository.search.SearchRepository
 import org.junit.Before
 import org.junit.Rule
@@ -16,9 +14,12 @@ import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
-@RunWith(MockitoJUnitRunner::class)
+@Config(manifest = Config.NONE)
+@RunWith(RobolectricTestRunner::class)
 class SearchViewModelTest {
 
     companion object {
@@ -29,12 +30,14 @@ class SearchViewModelTest {
     @Rule
     @JvmField
     val rule: TestRule = InstantTaskExecutorRule()
+
     @Mock
     private lateinit var searchRepository: SearchRepository
     private lateinit var searchViewModel: SearchViewModel
 
     @Before
     fun runBeforeEachTest() {
+        MockitoAnnotations.initMocks(this)
         searchViewModel = SearchViewModel(searchRepository)
     }
 
@@ -42,20 +45,19 @@ class SearchViewModelTest {
     fun searchResultLiveData_is_updated_with_DataLoaded_state() {
 
         // Given
-        val liveData = MutableLiveData<Resource<SearchEntity>>()
-        liveData.value = Resource.Success(TestData.getSearchEntity())
-        Mockito.`when`(searchRepository.search(SEARCH_QUERY)).thenReturn(liveData)
+        Mockito.`when`(searchRepository.search(SEARCH_QUERY))
+            .thenReturn(Single.just(TestData.getSearchEntity()))
 
         // When
-        val searchResultLiveData: LiveData<ViewState> = searchViewModel.searchResult
+        searchViewModel.search(SEARCH_QUERY)
+        val searchResultLiveData = searchViewModel.getViewState()
         searchResultLiveData.observeForever {
         }
-        searchViewModel.search(SEARCH_QUERY)
 
         // Then
         Mockito.verify(searchRepository).search(SEARCH_QUERY)
-        Truth.assertThat(searchResultLiveData.value).isInstanceOf(ViewState.DataLoaded::class.java)
-        Truth.assertThat((searchResultLiveData.value as ViewState.DataLoaded<SearchEntity>).data)
+        Truth.assertThat(searchResultLiveData.value).isInstanceOf(DataLoadedState::class.java)
+        Truth.assertThat((searchResultLiveData.value as DataLoadedState).data)
             .isEqualTo(TestData.getSearchEntity())
 
     }
@@ -64,21 +66,23 @@ class SearchViewModelTest {
     fun searchResultLiveData_is_updated_with_Error_state() {
 
         // Given
-        val liveData = MutableLiveData<Resource<SearchEntity>>()
-        liveData.value = Resource.Error(ERROR_MESSAGE)
-        Mockito.`when`(searchRepository.search(SEARCH_QUERY)).thenReturn(liveData)
+        Mockito.`when`(searchRepository.search(SEARCH_QUERY)).thenReturn(
+            Single.error(
+                Throwable(
+                    ERROR_MESSAGE
+                )
+            )
+        )
 
         // When
-        val searchResultLiveData: LiveData<ViewState> = searchViewModel.searchResult
+        searchViewModel.search(SEARCH_QUERY)
+        val searchResultLiveData = searchViewModel.getViewState()
         searchResultLiveData.observeForever {
         }
-        searchViewModel.search(SEARCH_QUERY)
 
         // Then
         Mockito.verify(searchRepository).search(SEARCH_QUERY)
-        Truth.assertThat(searchResultLiveData.value).isInstanceOf(ViewState.Error::class.java)
-        Truth.assertThat((searchResultLiveData.value as ViewState.Error).errorMessage)
-            .isEqualTo(ERROR_MESSAGE)
+        Truth.assertThat(searchResultLiveData.value).isInstanceOf(ErrorState::class.java)
 
     }
 

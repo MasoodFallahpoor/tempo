@@ -55,8 +55,8 @@ dependencies {
     testImplementation(Dependencies.CommonTest.junit)
     testImplementation(Dependencies.CommonTest.truth)
     testImplementation(Dependencies.CommonTest.testCore)
+    testImplementation(Dependencies.CommonTest.robolectric)
     testImplementation(Dependencies.CommonTest.mockito)
     testImplementation(Dependencies.CommonTest.archCoreTesting)
     testImplementation(Dependencies.DataTest.retrofitMock)
-    testImplementation(Dependencies.DataTest.robolectric)
 }
