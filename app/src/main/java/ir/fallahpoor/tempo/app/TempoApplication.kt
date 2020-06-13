@@ -7,7 +7,7 @@ import ir.fallahpoor.tempo.app.di.DaggerAppComponent
 
 class TempoApplication : Application() {
 
-    val appComponent: AppComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
+    val appComponent: AppComponent by lazy {
         DaggerAppComponent
             .builder()
             .appModule(AppModule(this))
