@@ -31,7 +31,7 @@ object Spotify {
     fun openSpotifyPageInPlayStore(context: Context) {
 
         val referrer =
-            "adjust_campaign=PACKAGE_NAME&adjust_tracker=ndjczk&utm_source=adjust_preinstall"
+            "adjust_campaign=" + context.packageName + "&adjust_tracker=ndjczk&utm_source=adjust_preinstall"
 
         try {
             val uri = Uri.parse("market://details")
