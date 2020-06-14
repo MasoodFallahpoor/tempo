@@ -1,7 +1,6 @@
 package ir.fallahpoor.tempo.search.view
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +17,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.SearchEntity
@@ -27,32 +26,21 @@ import ir.fallahpoor.tempo.data.entity.artist.ArtistEntity
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.search.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
+    private val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        injectViewModelFactory()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupSearchView()
         observeViewModel()
-    }
-
-    private fun injectViewModelFactory() {
-        (activity?.application as TempoApplication).appComponent.inject(this)
     }
 
     private fun setupSearchView() {

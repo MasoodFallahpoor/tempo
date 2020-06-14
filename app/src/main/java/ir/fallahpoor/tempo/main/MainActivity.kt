@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo
+package ir.fallahpoor.tempo.main
 
 import android.os.Bundle
 import android.view.Menu
@@ -9,8 +9,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
+import dagger.hilt.android.AndroidEntryPoint
+import ir.fallahpoor.tempo.R
 import kotlinx.android.synthetic.main.activity_main.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration

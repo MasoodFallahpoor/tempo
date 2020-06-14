@@ -7,23 +7,21 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import ir.fallahpoor.tempo.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import ir.fallahpoor.tempo.main.MainActivity
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.app.TempoApplication
-import ir.fallahpoor.tempo.common.*
+import ir.fallahpoor.tempo.common.DataLoadedState
+import ir.fallahpoor.tempo.common.ErrorState
+import ir.fallahpoor.tempo.common.LoadingState
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
 import kotlinx.android.synthetic.main.activity_splash.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelFactory
-    private val splashViewModel: SplashViewModel by viewModels { viewModelFactory }
+    private val splashViewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        injectViewModelFactory()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -31,10 +29,6 @@ class SplashActivity : AppCompatActivity() {
         observeViewModel()
         splashViewModel.getAccessToken()
 
-    }
-
-    private fun injectViewModelFactory() {
-        (application as TempoApplication).appComponent.inject(this)
     }
 
     private fun observeViewModel() {

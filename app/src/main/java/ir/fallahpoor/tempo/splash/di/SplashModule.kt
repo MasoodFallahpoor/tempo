@@ -1,16 +1,28 @@
 package ir.fallahpoor.tempo.splash.di
 
-import androidx.lifecycle.ViewModel
-import dagger.Binds
 import dagger.Module
-import dagger.multibindings.IntoMap
-import ir.fallahpoor.tempo.app.di.ViewModelKey
-import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
+import ir.fallahpoor.tempo.data.common.PreferencesManager
+import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepository
+import ir.fallahpoor.tempo.data.repository.authentication.AuthenticationRepositoryImpl
+import ir.fallahpoor.tempo.data.webservice.AccessTokenWebService
+import ir.fallahpoor.tempo.data.webservice.WebServiceFactory
 
+@InstallIn(ActivityComponent::class)
 @Module
-abstract class SplashModule {
-    @Binds
-    @IntoMap
-    @ViewModelKey(SplashViewModel::class)
-    abstract fun bindSplashViewModel(splashViewModel: SplashViewModel): ViewModel
+class SplashModule {
+    @Provides
+    fun provideAccessTokenWebService(webServiceFactory: WebServiceFactory): AccessTokenWebService {
+        return webServiceFactory.createAuthenticationService(AccessTokenWebService::class.java)
+    }
+
+    @Provides
+    fun provideAuthenticationRepository(
+        accessTokenWebService: AccessTokenWebService,
+        preferencesManager: PreferencesManager
+    ): AuthenticationRepository {
+        return AuthenticationRepositoryImpl(accessTokenWebService, preferencesManager)
+    }
 }

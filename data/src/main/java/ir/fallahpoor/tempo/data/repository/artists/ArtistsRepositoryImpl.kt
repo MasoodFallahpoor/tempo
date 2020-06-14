@@ -10,12 +10,8 @@ import ir.fallahpoor.tempo.data.entity.artist.ArtistsEnvelop
 import ir.fallahpoor.tempo.data.entity.track.TrackEntity
 import ir.fallahpoor.tempo.data.entity.track.TracksEnvelop
 import ir.fallahpoor.tempo.data.webservice.ArtistsWebService
-import javax.inject.Inject
 
-class ArtistsRepositoryImpl
-@Inject constructor(
-    private val artistsWebService: ArtistsWebService
-) : ArtistsRepository {
+class ArtistsRepositoryImpl(private val artistsWebService: ArtistsWebService) : ArtistsRepository {
 
     companion object {
         private const val OFFSET = 0

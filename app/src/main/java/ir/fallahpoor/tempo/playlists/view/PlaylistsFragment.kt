@@ -1,6 +1,5 @@
 package ir.fallahpoor.tempo.playlists.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,24 +11,21 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionInflater
 import coil.api.load
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.playlists.viewmodel.PlaylistsViewModel
 import kotlinx.android.synthetic.main.fragment_playlists.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class PlaylistsFragment : Fragment() {
 
     private var categoryId: String? = null
     private var categoryName: String? = null
     private var categoryIconUrl: String? = null
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val playlistsViewModel: PlaylistsViewModel by viewModels { viewModelFactory }
+    private val playlistsViewModel: PlaylistsViewModel by viewModels()
     private lateinit var playlistsAdapter: PlaylistsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,21 +59,12 @@ class PlaylistsFragment : Fragment() {
 
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        injectViewModelFactory()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupAdapter()
         setupRecyclerView()
         observeViewModel()
         playlistsViewModel.getPlaylists(categoryId ?: "")
-    }
-
-    private fun injectViewModelFactory() {
-        (activity?.application as TempoApplication).appComponent.inject(this)
     }
 
     private fun setupAdapter() {

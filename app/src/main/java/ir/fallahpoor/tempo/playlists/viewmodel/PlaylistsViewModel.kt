@@ -1,5 +1,6 @@
 package ir.fallahpoor.tempo.playlists.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import ir.fallahpoor.tempo.common.BaseViewModel
@@ -10,10 +11,9 @@ import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.entity.common.ListEntity
 import ir.fallahpoor.tempo.data.entity.playlist.PlaylistEntity
 import ir.fallahpoor.tempo.data.repository.category.CategoriesRepository
-import javax.inject.Inject
 
 class PlaylistsViewModel
-@Inject constructor(
+@ViewModelInject constructor(
     private val categoriesRepository: CategoriesRepository
 ) : BaseViewModel<List<PlaylistEntity>>() {
 

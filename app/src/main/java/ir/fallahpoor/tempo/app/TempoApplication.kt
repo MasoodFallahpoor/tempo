@@ -1,17 +1,7 @@
 package ir.fallahpoor.tempo.app
 
 import android.app.Application
-import ir.fallahpoor.tempo.app.di.AppComponent
-import ir.fallahpoor.tempo.app.di.AppModule
-import ir.fallahpoor.tempo.app.di.DaggerAppComponent
+import dagger.hilt.android.HiltAndroidApp
 
-class TempoApplication : Application() {
-
-    val appComponent: AppComponent by lazy {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(this))
-            .build()
-    }
-
-}
+@HiltAndroidApp
+class TempoApplication : Application()

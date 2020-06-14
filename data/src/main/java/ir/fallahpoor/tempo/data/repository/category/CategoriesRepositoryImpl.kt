@@ -9,8 +9,7 @@ import ir.fallahpoor.tempo.data.entity.playlist.PlaylistsEnvelop
 import ir.fallahpoor.tempo.data.webservice.CategoriesWebService
 import javax.inject.Inject
 
-class CategoriesRepositoryImpl
-@Inject constructor(
+class CategoriesRepositoryImpl(
     private val categoriesWebService: CategoriesWebService
 ) : CategoriesRepository {
 

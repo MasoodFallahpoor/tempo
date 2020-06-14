@@ -1,17 +1,20 @@
 package ir.fallahpoor.tempo.artist.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import ir.fallahpoor.tempo.common.*
+import ir.fallahpoor.tempo.common.BaseViewModel
+import ir.fallahpoor.tempo.common.DataLoadedState
+import ir.fallahpoor.tempo.common.ErrorState
+import ir.fallahpoor.tempo.common.LoadingState
 import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
 import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepository
-import javax.inject.Inject
 
 // FIXME: Don't fetch data if it's already fetched.
 
 class ArtistViewModel
-@Inject constructor(
+@ViewModelInject constructor(
     private val artistsRepository: ArtistsRepository
 ) : BaseViewModel<ArtistAllInfoEntity>() {
 

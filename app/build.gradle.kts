@@ -4,6 +4,7 @@ plugins {
     kotlin("android.extensions")
     kotlin("kapt")
     id("androidx.navigation.safeargs.kotlin")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -37,6 +38,10 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
     implementation(Dependencies.App.kotlin)
     implementation(Dependencies.App.appCompat)
@@ -53,8 +58,10 @@ dependencies {
     implementation(Dependencies.App.lifecycle)
     kapt(Dependencies.App.lifecycleCompiler)
     implementation(Dependencies.App.inject)
-    implementation(Dependencies.App.dagger)
-    kapt(Dependencies.App.daggerCompiler)
+    implementation(Dependencies.App.hilt)
+    kapt(Dependencies.App.hiltAndroidCompiler)
+    implementation(Dependencies.App.hiltViewModel)
+    kapt(Dependencies.App.hiltCompiler)
     implementation(Dependencies.App.coil)
     implementation(Dependencies.App.materialProgressBar)
     implementation(Dependencies.App.klaster)

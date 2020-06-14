@@ -1,6 +1,5 @@
 package ir.fallahpoor.tempo.categories.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,34 +11,23 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.categories.viewmodel.CategoriesViewModel
 import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
 import kotlinx.android.synthetic.main.fragment_categories.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class CategoriesFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val categoriesViewModel: CategoriesViewModel by viewModels { viewModelFactory }
+    private val categoriesViewModel: CategoriesViewModel by viewModels()
     private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_categories, container, false)
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        injectViewModelFactory()
-    }
-
-    private fun injectViewModelFactory() {
-        (activity?.application as TempoApplication).appComponent.inject(this)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -109,7 +97,11 @@ class CategoriesFragment : Fragment() {
     private fun showErrorSnackbar(message: String) {
         Snackbar.make(categoriesRecyclerView, message, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.try_again) {
-                categoriesViewModel.getCategories()
+                if (categoriesAdapter.itemCount == 0) {
+                    categoriesViewModel.getCategories()
+                } else {
+                    categoriesViewModel.getMoreCategories()
+                }
             }
             .show()
     }

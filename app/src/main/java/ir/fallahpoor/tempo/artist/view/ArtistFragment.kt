@@ -1,6 +1,5 @@
 package ir.fallahpoor.tempo.artist.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -14,8 +13,8 @@ import androidx.transition.TransitionInflater
 import coil.api.load
 import com.github.rongi.klaster.Klaster
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ir.fallahpoor.tempo.R
-import ir.fallahpoor.tempo.app.TempoApplication
 import ir.fallahpoor.tempo.artist.viewmodel.ArtistViewModel
 import ir.fallahpoor.tempo.common.*
 import ir.fallahpoor.tempo.common.itemdecoration.SpaceItemDecoration
@@ -27,18 +26,15 @@ import kotlinx.android.synthetic.main.fragment_artist.*
 import kotlinx.android.synthetic.main.list_item_album.view.*
 import kotlinx.android.synthetic.main.list_item_search_result_artist.view.*
 import kotlinx.android.synthetic.main.list_item_track.view.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class ArtistFragment : Fragment() {
 
     private var artistId: String? = null
     private var artistName: String? = null
     private var artistImageUrl: String? = null
     private var artistUri: String? = null
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val artistViewModel: ArtistViewModel by viewModels { viewModelFactory }
+    private val artistViewModel: ArtistViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -81,11 +77,6 @@ class ArtistFragment : Fragment() {
 
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        injectViewModelFactory()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeViewModel()
@@ -120,10 +111,6 @@ class ArtistFragment : Fragment() {
             .show()
     }
 
-    private fun injectViewModelFactory() {
-        (activity?.application as TempoApplication).appComponent.inject(this)
-    }
-
     private fun observeViewModel() {
         artistViewModel.getViewState().observe(
             viewLifecycleOwner,
@@ -147,7 +134,7 @@ class ArtistFragment : Fragment() {
         renderTopTracks(artistAllInfoEntity.topTracks)
         renderAlbums(artistAllInfoEntity.albums)
         renderRelatedArtists(artistAllInfoEntity.relatedArtists)
-        contentContainerLayout.visibility = View.VISIBLE
+        contentContainerLayout.fadeIn()
     }
 
     private fun renderBaseInformation(artistEntity: ArtistEntity) {
@@ -296,7 +283,6 @@ class ArtistFragment : Fragment() {
     private fun renderError(message: String) {
         Snackbar.make(artistImageView, message, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.try_again) {
-                showLoading()
                 artistViewModel.getArtist(artistId ?: "")
             }
             .show()

@@ -1,5 +1,6 @@
 package ir.fallahpoor.tempo.search.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import ir.fallahpoor.tempo.common.BaseViewModel
@@ -9,10 +10,9 @@ import ir.fallahpoor.tempo.common.LoadingState
 import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.entity.SearchEntity
 import ir.fallahpoor.tempo.data.repository.search.SearchRepository
-import javax.inject.Inject
 
 class SearchViewModel
-@Inject constructor(
+@ViewModelInject constructor(
     private val searchRepository: SearchRepository
 ) : BaseViewModel<SearchEntity>() {
 

@@ -22,6 +22,12 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
         const val HEADER_NAME_AUTHORIZATION = "Authorization"
     }
 
+    fun <S> createApiService(serviceClass: Class<S>): S =
+        retrofitApi.create(serviceClass)
+
+    fun <S> createAuthenticationService(serviceClass: Class<S>): S =
+        retrofitAuthentication.create(serviceClass)
+
     private val retrofitApi = Retrofit.Builder()
         .baseUrl(API_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -114,11 +120,5 @@ class WebServiceFactory @Inject constructor(private val preferencesManager: Pref
         }
 
     }
-
-    fun <S> createApiService(serviceClass: Class<S>): S =
-        retrofitApi.create(serviceClass)
-
-    fun <S> createAuthenticationService(serviceClass: Class<S>): S =
-        retrofitAuthentication.create(serviceClass)
 
 }
