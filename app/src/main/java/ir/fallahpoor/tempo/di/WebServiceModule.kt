@@ -17,18 +17,10 @@ import ir.fallahpoor.tempo.data.webservice.*
 
 @Module
 @InstallIn(ActivityComponent::class)
-object ActivityModule {
+object WebServiceModule {
     @Provides
     fun provideAccessTokenWebService(webServiceFactory: WebServiceFactory): AccessTokenWebService {
         return webServiceFactory.createAuthenticationService(AccessTokenWebService::class.java)
-    }
-
-    @Provides
-    fun provideAuthenticationRepository(
-        accessTokenWebService: AccessTokenWebService,
-        preferencesManager: PreferencesManager
-    ): AuthenticationRepository {
-        return AuthenticationRepositoryImpl(accessTokenWebService, preferencesManager)
     }
 
     @Provides
@@ -37,27 +29,12 @@ object ActivityModule {
     }
 
     @Provides
-    fun provideCategoriesRepository(categoriesWebService: CategoriesWebService): CategoriesRepository {
-        return CategoriesRepositoryImpl(categoriesWebService)
-    }
-
-    @Provides
     fun provideSearchWebService(webServiceFactory: WebServiceFactory): SearchWebService {
         return webServiceFactory.createApiService(SearchWebService::class.java)
     }
 
     @Provides
-    fun provideSearchRepository(searchWebService: SearchWebService): SearchRepository {
-        return SearchRepositoryImpl(searchWebService)
-    }
-
-    @Provides
     fun provideArtistsWebService(webServiceFactory: WebServiceFactory): ArtistsWebService {
         return webServiceFactory.createApiService(ArtistsWebService::class.java)
-    }
-
-    @Provides
-    fun provideArtistsRepository(artistsWebService: ArtistsWebService): ArtistsRepository {
-        return ArtistsRepositoryImpl(artistsWebService)
     }
 }

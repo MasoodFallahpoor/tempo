@@ -9,7 +9,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-class AuthenticationRepositoryImpl(
+class AuthenticationRepositoryImpl
+@Inject constructor(
     private val accessTokenWebService: AccessTokenWebService,
     private val preferencesManager: PreferencesManager
 ) : AuthenticationRepository {
