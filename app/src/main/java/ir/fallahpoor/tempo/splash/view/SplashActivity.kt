@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ir.fallahpoor.tempo.main.MainActivity
 import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.common.DataLoadedState
 import ir.fallahpoor.tempo.common.ErrorState
 import ir.fallahpoor.tempo.common.LoadingState
+import ir.fallahpoor.tempo.main.MainActivity
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
 import kotlinx.android.synthetic.main.activity_splash.*
 
@@ -22,13 +22,10 @@ class SplashActivity : AppCompatActivity() {
     private val splashViewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
         observeViewModel()
         splashViewModel.getAccessToken()
-
     }
 
     private fun observeViewModel() {
