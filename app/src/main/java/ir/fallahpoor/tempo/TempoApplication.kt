@@ -1,4 +1,4 @@
-package ir.fallahpoor.tempo.app
+package ir.fallahpoor.tempo
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

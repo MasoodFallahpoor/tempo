@@ -12,7 +12,7 @@ import ir.fallahpoor.tempo.R
 import ir.fallahpoor.tempo.common.DataLoadedState
 import ir.fallahpoor.tempo.common.ErrorState
 import ir.fallahpoor.tempo.common.LoadingState
-import ir.fallahpoor.tempo.main.MainActivity
+import ir.fallahpoor.tempo.MainActivity
 import ir.fallahpoor.tempo.splash.viewmodel.SplashViewModel
 import kotlinx.android.synthetic.main.activity_splash.*
 
