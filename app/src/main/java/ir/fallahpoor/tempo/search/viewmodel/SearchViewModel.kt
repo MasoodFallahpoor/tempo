@@ -24,10 +24,11 @@ class SearchViewModel
             return
         }
 
-        setViewState(LoadingState())
-
         val d: Disposable = searchRepository.search(query)
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                setViewState(LoadingState())
+            }
             .subscribe(
                 { searchEntity: SearchEntity ->
                     previousQuery = query

@@ -11,33 +11,40 @@ import ir.fallahpoor.tempo.data.common.ExceptionHumanizer
 import ir.fallahpoor.tempo.data.entity.artist.ArtistAllInfoEntity
 import ir.fallahpoor.tempo.data.repository.artists.ArtistsRepository
 
-// FIXME: Don't fetch data if it's already fetched.
-
 class ArtistViewModel
 @ViewModelInject constructor(
     private val artistsRepository: ArtistsRepository
 ) : BaseViewModel<ArtistAllInfoEntity>() {
 
+    private var dataFetched = false
     private var artistAllInfoEntity: ArtistAllInfoEntity? = null
 
     fun getArtist(artistId: String) {
 
-        setViewState(LoadingState())
+        if (dataFetched) {
+            setViewState(DataLoadedState(artistAllInfoEntity!!))
+        } else {
 
-        val d: Disposable = artistsRepository.getArtistAllInfo(artistId)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { artistAllInfoEntity: ArtistAllInfoEntity ->
-                    this.artistAllInfoEntity = artistAllInfoEntity
-                    setViewState(DataLoadedState(artistAllInfoEntity))
-                },
-                { t: Throwable ->
-                    val message: String = ExceptionHumanizer.getHumanizedErrorMessage(t)
-                    setViewState(ErrorState(message))
+            val d: Disposable = artistsRepository.getArtistAllInfo(artistId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    setViewState(LoadingState())
                 }
-            )
+                .subscribe(
+                    { artistAllInfoEntity: ArtistAllInfoEntity ->
+                        this.artistAllInfoEntity = artistAllInfoEntity
+                        dataFetched = true
+                        setViewState(DataLoadedState(artistAllInfoEntity))
+                    },
+                    { t: Throwable ->
+                        val message: String = ExceptionHumanizer.getHumanizedErrorMessage(t)
+                        setViewState(ErrorState(message))
+                    }
+                )
 
-        addDisposable(d)
+            addDisposable(d)
+
+        }
 
     }
 

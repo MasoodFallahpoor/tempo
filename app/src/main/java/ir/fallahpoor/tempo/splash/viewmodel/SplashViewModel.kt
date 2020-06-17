@@ -1,6 +1,7 @@
 package ir.fallahpoor.tempo.splash.viewmodel
 
 import androidx.hilt.lifecycle.ViewModelInject
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import ir.fallahpoor.tempo.common.BaseViewModel
 import ir.fallahpoor.tempo.common.DataLoadedState
@@ -16,9 +17,11 @@ class SplashViewModel
 
     fun getAccessToken() {
 
-        setViewState(LoadingState())
-
         val d: Disposable = authenticationRepository.getAccessToken()
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                setViewState(LoadingState())
+            }
             .subscribe(
                 {
                     setViewState(DataLoadedState(Unit))

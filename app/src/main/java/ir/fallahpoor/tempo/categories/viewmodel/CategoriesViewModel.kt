@@ -41,10 +41,11 @@ class CategoriesViewModel
 
     private fun _getCategories() {
 
-        setViewState(LoadingState())
-
         val d: Disposable = categoriesRepository.getCategories(offset, LIMIT)
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                setViewState(LoadingState())
+            }
             .subscribe(
                 { c: ListEntity<CategoryEntity> ->
                     categories.addAll(c.items)

@@ -35,10 +35,11 @@ class PlaylistsViewModel
 
     private fun _getPlaylists(categoryId: String) {
 
-        setViewState(LoadingState())
-
         val d: Disposable = categoriesRepository.getPlaylists(categoryId, offset, LIMIT)
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                setViewState(LoadingState())
+            }
             .subscribe(
                 { p: ListEntity<PlaylistEntity> ->
                     playlists.addAll(p.items)
